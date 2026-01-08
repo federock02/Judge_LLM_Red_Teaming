@@ -1,0 +1,482 @@
+{
+  "global": {
+    "num_edges": 88536,
+    "num_total_mutations": 88536,
+    "num_unique_root_prompts": 3079,
+    "edge_level_attack_success_rate": 0.4147465437788018,
+    "edge_level_semantic_preservation": {
+      "mean": 0.5849796384054073,
+      "std": 0.1802795114429944
+    },
+    "edge_level_judge_consistent_obfuscation": 0.22112266245526604,
+    "edge_level_depth_of_success": {
+      "mean": 3.3788943355119825,
+      "max": 6
+    },
+    "root_level_attack_success_rate": 0.9922052614485223,
+    "root_level_semantic_preservation": {
+      "mean": 0.560334190967896,
+      "std": 0.18035769602814627
+    },
+    "root_level_judge_consistent_obfuscation": 0.6400803024842778,
+    "root_level_depth_of_success": {
+      "mean": 1.2409165302782323,
+      "max": 5
+    },
+    "mutation_efficiency_index": 0.09654976087652024,
+    "semantic_drift_rate": {
+      "mean": 0.093220437088397,
+      "std": 0.1709748569784633
+    }
+  },
+  "per_transformation": {
+    "Philosophical/Ethical Inquiry": {
+      "num_edges": 1851,
+      "global_attack_success_rate": 0.7309562398703403,
+      "root_level_attack_success_rate": 0.9961832061068703,
+      "global_semantic_preservation": {
+        "mean": 0.545490041716293,
+        "std": 0.1803339152284227
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.528961016162572,
+        "std": 0.17912539648316075
+      },
+      "global_judge_consistent_obfuscation": 0.37957062716241113,
+      "root_level_judge_consistent_obfuscation": 0.6110815788043364,
+      "global_depth_of_success": {
+        "mean": 2.033259423503326,
+        "median": 2.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.0459770114942528,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.26170781777915725,
+      "semantic_drift_rate": {
+        "mean": 0.22766025035643597,
+        "std": 0.2182059514970574
+      }
+    },
+    "News": {
+      "num_edges": 6552,
+      "global_attack_success_rate": 0.4314713064713065,
+      "root_level_attack_success_rate": 0.9911894273127754,
+      "global_semantic_preservation": {
+        "mean": 0.6668085596225394,
+        "std": 0.16273684868561
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.650961169219201,
+        "std": 0.1662570650264064
+      },
+      "global_judge_consistent_obfuscation": 0.26928629166311874,
+      "root_level_judge_consistent_obfuscation": 0.6801611185073853,
+      "global_depth_of_success": {
+        "mean": 3.629642730810046,
+        "median": 3.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.3244444444444445,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.10311022851593685,
+      "semantic_drift_rate": {
+        "mean": 0.0696000675567038,
+        "std": 0.12989694450408099
+      }
+    },
+    "Euphemistic Reduction": {
+      "num_edges": 20166,
+      "global_attack_success_rate": 0.21794108896161857,
+      "root_level_attack_success_rate": 0.9473684210526315,
+      "global_semantic_preservation": {
+        "mean": 0.6331370955668955,
+        "std": 0.1559590915641163
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.6115293942691474,
+        "std": 0.15723655717622567
+      },
+      "global_judge_consistent_obfuscation": 0.1204031268215995,
+      "root_level_judge_consistent_obfuscation": 0.6370762560824702,
+      "global_depth_of_success": {
+        "mean": 4.265301478953356,
+        "median": 5.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.619047619047619,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.03764328739146694,
+      "semantic_drift_rate": {
+        "mean": 0.04463368257420673,
+        "std": 0.09531729351813793
+      }
+    },
+    "Always Safe": {
+      "num_edges": 1818,
+      "global_attack_success_rate": 0.6083608360836084,
+      "root_level_attack_success_rate": 1.0,
+      "global_semantic_preservation": {
+        "mean": 0.6045008437831991,
+        "std": 0.16909334562862532
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5889456139644773,
+        "std": 0.16957205270657086
+      },
+      "global_judge_consistent_obfuscation": 0.3445040299137081,
+      "root_level_judge_consistent_obfuscation": 0.6359869021523211,
+      "global_depth_of_success": {
+        "mean": 2.3318264014466545,
+        "median": 1.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.0223214285714286,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.23278854291346146,
+      "semantic_drift_rate": {
+        "mean": 0.1835681076009929,
+        "std": 0.24069384379873104
+      }
+    },
+    "Checklist Abstraction": {
+      "num_edges": 7074,
+      "global_attack_success_rate": 0.48968052021487135,
+      "root_level_attack_success_rate": 0.9844357976653697,
+      "global_semantic_preservation": {
+        "mean": 0.5348444044589865,
+        "std": 0.1631519834614867
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5056073242859925,
+        "std": 0.1564574356365445
+      },
+      "global_judge_consistent_obfuscation": 0.23699460544211093,
+      "root_level_judge_consistent_obfuscation": 0.6352729647192046,
+      "global_depth_of_success": {
+        "mean": 3.4390877598152425,
+        "median": 3.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.6521739130434783,
+        "median": 2.0
+      },
+      "mutation_efficiency_index": 0.09237270861829729,
+      "semantic_drift_rate": {
+        "mean": 0.10779927435748654,
+        "std": 0.1498734373751953
+      }
+    },
+    "Analogy Transform": {
+      "num_edges": 3774,
+      "global_attack_success_rate": 0.5100688924218336,
+      "root_level_attack_success_rate": 0.9959677419354839,
+      "global_semantic_preservation": {
+        "mean": 0.5112371719938322,
+        "std": 0.22057150468409578
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.4920976999354188,
+        "std": 0.21846660265952936
+      },
+      "global_judge_consistent_obfuscation": 0.24573406981966628,
+      "root_level_judge_consistent_obfuscation": 0.5689827229587301,
+      "global_depth_of_success": {
+        "mean": 3.0633766233766235,
+        "median": 2.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.1336032388663968,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.1159356520982876,
+      "semantic_drift_rate": {
+        "mean": 0.12887496964203488,
+        "std": 0.24180516211728598
+      }
+    },
+    "Prepend and Append Benign": {
+      "num_edges": 1506,
+      "global_attack_success_rate": 0.7463479415670651,
+      "root_level_attack_success_rate": 1.0,
+      "global_semantic_preservation": {
+        "mean": 0.508377942575728,
+        "std": 0.21601955225783864
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.4716330053253459,
+        "std": 0.21032186372125788
+      },
+      "global_judge_consistent_obfuscation": 0.347005799953216,
+      "root_level_judge_consistent_obfuscation": 0.5583402609695559,
+      "global_depth_of_success": {
+        "mean": 1.811387900355872,
+        "median": 2.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.0565217391304347,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.232620872893165,
+      "semantic_drift_rate": {
+        "mean": 0.29934167568442,
+        "std": 0.28999609907164137
+      }
+    },
+    "Third-Person Distance": {
+      "num_edges": 9213,
+      "global_attack_success_rate": 0.39693910778248126,
+      "root_level_attack_success_rate": 0.9864253393665159,
+      "global_semantic_preservation": {
+        "mean": 0.5898812862361188,
+        "std": 0.15714005407307385
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5675957638859334,
+        "std": 0.15576641074552414
+      },
+      "global_judge_consistent_obfuscation": 0.22396401676123814,
+      "root_level_judge_consistent_obfuscation": 0.7163178880290209,
+      "global_depth_of_success": {
+        "mean": 4.021875854525567,
+        "median": 4.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.5871559633027523,
+        "median": 2.0
+      },
+      "mutation_efficiency_index": 0.07658371129498615,
+      "semantic_drift_rate": {
+        "mean": 0.06621331929219192,
+        "std": 0.1306763243782639
+      }
+    },
+    "Append Benign": {
+      "num_edges": 1917,
+      "global_attack_success_rate": 0.5706833594157538,
+      "root_level_attack_success_rate": 0.9953917050691244,
+      "global_semantic_preservation": {
+        "mean": 0.5598777176602902,
+        "std": 0.2098238323562087
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5237321976328905,
+        "std": 0.20816068333439264
+      },
+      "global_judge_consistent_obfuscation": 0.27503373832201383,
+      "root_level_judge_consistent_obfuscation": 0.549510783417159,
+      "global_depth_of_success": {
+        "mean": 2.3775137111517366,
+        "median": 1.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.0509259259259258,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.17235401048904914,
+      "semantic_drift_rate": {
+        "mean": 0.22185700148928,
+        "std": 0.28710497049574013
+      }
+    },
+    "Scientific Abstraction": {
+      "num_edges": 7803,
+      "global_attack_success_rate": 0.35255670895809305,
+      "root_level_attack_success_rate": 0.9666666666666667,
+      "global_semantic_preservation": {
+        "mean": 0.5703657506553925,
+        "std": 0.17366757074338693
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.548397448505669,
+        "std": 0.1739213860907819
+      },
+      "global_judge_consistent_obfuscation": 0.19274788335735304,
+      "root_level_judge_consistent_obfuscation": 0.6413069510743732,
+      "global_depth_of_success": {
+        "mean": 3.816793893129771,
+        "median": 4.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.477832512315271,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.07037395708645809,
+      "semantic_drift_rate": {
+        "mean": 0.06115154087768829,
+        "std": 0.1298457520321291
+      }
+    },
+    "Hypothetical Scenario": {
+      "num_edges": 1413,
+      "global_attack_success_rate": 0.7275300778485492,
+      "root_level_attack_success_rate": 1.0,
+      "global_semantic_preservation": {
+        "mean": 0.5113680018065926,
+        "std": 0.14385437372227827
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5002761940126652,
+        "std": 0.14622745814413193
+      },
+      "global_judge_consistent_obfuscation": 0.359023772818099,
+      "root_level_judge_consistent_obfuscation": 0.5889922082424164,
+      "global_depth_of_success": {
+        "mean": 1.8249027237354085,
+        "median": 1.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.025531914893617,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.27406960596484475,
+      "semantic_drift_rate": {
+        "mean": 0.2703761114605082,
+        "std": 0.25315612544541105
+      }
+    },
+    "Bullet Points": {
+      "num_edges": 7284,
+      "global_attack_success_rate": 0.47748489840746844,
+      "root_level_attack_success_rate": 0.9839357429718876,
+      "global_semantic_preservation": {
+        "mean": 0.6131666268072183,
+        "std": 0.18736634069828206
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5757433717921979,
+        "std": 0.1836674592528859
+      },
+      "global_judge_consistent_obfuscation": 0.255770581379586,
+      "root_level_judge_consistent_obfuscation": 0.6815227639962391,
+      "global_depth_of_success": {
+        "mean": 3.4312823461759634,
+        "median": 3.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.6979591836734693,
+        "median": 2.0
+      },
+      "mutation_efficiency_index": 0.09771548996923439,
+      "semantic_drift_rate": {
+        "mean": 0.10108590044054616,
+        "std": 0.13936338163569048
+      }
+    },
+    "Storytelling": {
+      "num_edges": 4164,
+      "global_attack_success_rate": 0.5235350624399616,
+      "root_level_attack_success_rate": 1.0,
+      "global_semantic_preservation": {
+        "mean": 0.5574850956403886,
+        "std": 0.17691415866827517
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5342698385339275,
+        "std": 0.17889850732713813
+      },
+      "global_judge_consistent_obfuscation": 0.26270646994394914,
+      "root_level_judge_consistent_obfuscation": 0.6155437752604485,
+      "global_depth_of_success": {
+        "mean": 3.163302752293578,
+        "median": 3.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.2125,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.12482577076657718,
+      "semantic_drift_rate": {
+        "mean": 0.12029406354350183,
+        "std": 0.20396428735060684
+      }
+    },
+    "Legal/Policy Framing": {
+      "num_edges": 5403,
+      "global_attack_success_rate": 0.42309827873403666,
+      "root_level_attack_success_rate": 0.99581589958159,
+      "global_semantic_preservation": {
+        "mean": 0.5107272950714851,
+        "std": 0.17342722217070816
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.4932407086815827,
+        "std": 0.1709864633903985
+      },
+      "global_judge_consistent_obfuscation": 0.21359659204724574,
+      "root_level_judge_consistent_obfuscation": 0.6396431578751888,
+      "global_depth_of_success": {
+        "mean": 3.4230096237970256,
+        "median": 3.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.1974789915966386,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.0997911015990231,
+      "semantic_drift_rate": {
+        "mean": 0.08819799528991748,
+        "std": 0.16182768096179348
+      }
+    },
+    "Metaphorical Reframing": {
+      "num_edges": 4008,
+      "global_attack_success_rate": 0.4009481037924152,
+      "root_level_attack_success_rate": 0.9911894273127754,
+      "global_semantic_preservation": {
+        "mean": 0.5152541051596448,
+        "std": 0.2195285774045964
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.4904690439819146,
+        "std": 0.21598138982347168
+      },
+      "global_judge_consistent_obfuscation": 0.19940046009564857,
+      "root_level_judge_consistent_obfuscation": 0.5246984828673795,
+      "global_depth_of_success": {
+        "mean": 3.1076540136901056,
+        "median": 3.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.1511111111111112,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.09094486782954372,
+      "semantic_drift_rate": {
+        "mean": 0.1008479487803391,
+        "std": 0.2487544555639572
+      }
+    },
+    "Role Reversal (Expert/Historian)": {
+      "num_edges": 4590,
+      "global_attack_success_rate": 0.5326797385620915,
+      "root_level_attack_success_rate": 0.9959839357429718,
+      "global_semantic_preservation": {
+        "mean": 0.604471511242826,
+        "std": 0.16754731338251114
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5911892360013469,
+        "std": 0.17068848271658765
+      },
+      "global_judge_consistent_obfuscation": 0.30879819611481074,
+      "root_level_judge_consistent_obfuscation": 0.6998504718623487,
+      "global_depth_of_success": {
+        "mean": 3.4993865030674844,
+        "median": 3.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 1.2016129032258065,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.14312074266942237,
+      "semantic_drift_rate": {
+        "mean": 0.09366117552701944,
+        "std": 0.13885371561306642
+      }
+    }
+  }
+}
