@@ -1,0 +1,37 @@
+{
+  "global": {
+    "num_edges": 64734,
+    "num_total_mutations": 64734,
+    "num_unique_root_prompts": 1030,
+    "num_personas": 21578.0,
+    "edge_level_attack_success_rate": 0.1412395340933667,
+    "edge_level_semantic_preservation": {
+      "mean": 0.7165305433141632,
+      "std": 0.17680023183055735
+    },
+    "edge_level_judge_consistent_obfuscation": 0.08390385191902004,
+    "edge_level_depth_of_success": {
+      "mean": 3.327901126544898,
+      "max": 5
+    },
+    "root_level_attack_success_rate": 0.9815533980582525,
+    "root_level_semantic_preservation": {
+      "mean": 0.6105710816019616,
+      "std": 0.1655295472849267
+    },
+    "root_level_judge_consistent_obfuscation": 0.6519405327375652,
+    "root_level_min_depth_of_success": {
+      "mean": 1.2334322453016815,
+      "max": 5
+    },
+    "root_level_avg_depth_of_success": {
+      "mean": 1.999059486673889,
+      "max": 5
+    },
+    "mutation_efficiency_index": 0.03816106222142833,
+    "semantic_drift_rate": {
+      "mean": 0.03164199369542284,
+      "std": 0.10752651306158123
+    }
+  }
+}
