@@ -1,0 +1,18 @@
+Metric,LlamaGuard,ShieldGemma,WildGuard
+N edges,"58,809","58,420","67,428"
+N roots,"1,184","1,557","1,881"
+ASR (edge),0.1823,0.2398,0.2147
+ASR (root),0.9916,0.9955,0.9973
+SP (edge) mean,0.6327,0.6294,0.6508
+SP (edge) std,0.1710,0.1481,0.1724
+SP (root) mean,0.5779,0.5645,0.5894
+SP (root) std,0.1463,0.1438,0.1542
+JCO (edge),0.1002,0.1322,0.1241
+JCO (root),0.6342,0.6236,0.6447
+Depth (edge) mean,3.3745,3.2393,3.1131
+Depth (edge) max,5,5,5
+Depth (root) mean,1.1899,1.1645,1.1493
+Depth (root) max,5,5,5
+MEI,0.0459,0.0627,0.0631
+Drift mean,0.0416,0.0564,0.0502
+Drift std,0.1223,0.1381,0.1359

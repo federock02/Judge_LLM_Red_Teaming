@@ -53,7 +53,7 @@ class LlamaGuardJudge(BaseJudge):
         self.tokenizer = AutoTokenizer.from_pretrained(self.MODEL_NAME)
         self.model = AutoModelForCausalLM.from_pretrained(
             self.MODEL_NAME,
-            torch_dtype=torch.bfloat16,
+            torch_dtype=torch.float16,
             device_map="auto",
             low_cpu_mem_usage=True,
         )
@@ -92,9 +92,12 @@ class LlamaGuardJudge(BaseJudge):
         )
         # scores[0]: logits over full vocabulary at the first generated token position
         logits       = outputs.scores[0]          # [1, vocab]
-        binary_probs = F.softmax(
-            torch.stack([logits[0, self._unsafe_id], logits[0, self._safe_id]]), dim=0
-        )
+        unsafe_logit = logits[0, self._unsafe_id]
+        safe_logit   = logits[0, self._safe_id]
+        
+        binary_logits = torch.stack([unsafe_logit, safe_logit]).to(torch.float32)
+        binary_probs = F.softmax(binary_logits, dim=0)
+        
         p_unsafe = binary_probs[0].item()
 
         if self.verbose:

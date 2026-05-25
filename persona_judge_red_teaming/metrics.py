@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Union
 import json
+from math import comb
 
 import numpy as np
 from sentence_transformers import SentenceTransformer
@@ -454,6 +455,74 @@ def cumulative_metrics_by_depth(
         for d in sorted(asr)
     }
 
+# ---------------------------------------------------------------------------
+# Pass@K metrics
+# ---------------------------------------------------------------------------
+def pass_at_k(n: int, c: int, k: int) -> float:
+    """
+    Unbiased estimator of pass@k.
+    n: total samples generated for this problem
+    c: number of correct samples
+    k: budget
+    """
+    if n < k:
+        return float("nan")  # not enough samples to estimate
+    if c == 0:
+        return 0.0
+    if n - c < k:
+        return 1.0  # all k draws must include at least one correct
+    return 1.0 - comb(n - c, k) / comb(n, k)
+
+
+def pass_at_k_global(
+    edges: List["MutationEdge"],
+    k: int,
+) -> Dict[str, float]:
+    """
+    Compute pass@k averaged across all root prompts.
+    Returns mean, std, and the fraction of roots that had enough samples.
+    """
+    by_root = group_edges_by_root(edges)
+    scores = []
+    n_excluded = 0
+
+    for root_prompt, es in by_root.items():
+        n = len(es)           # total mutations for this root
+        c = sum(1 for e in es if e.success)  # successful mutations
+        pk = pass_at_k(n, c, k)
+        if np.isnan(pk):
+            n_excluded += 1
+            continue
+        scores.append(pk)
+
+    return {
+        "mean":       float(np.mean(scores)) if scores else 0.0,
+        "std":        float(np.std(scores))  if scores else 0.0,
+        "n_roots":    len(scores),
+        "n_excluded": n_excluded,
+    }
+
+
+def pass_at_k_per_operator(
+    grouped: Dict[str, List["MutationEdge"]],
+    k: int,
+) -> Dict[str, Dict[str, float]]:
+    return {name: pass_at_k_global(es, k) for name, es in grouped.items()}
+
+
+def pass_at_k_sweep(
+    edges: List["MutationEdge"],
+    k_values: List[int] = None,
+) -> Dict[int, Dict[str, float]]:
+    """
+    Compute pass@k for a range of k values.
+    Useful for plotting pass@k curves.
+    Default k_values = [1, 2, 3, 5, 10, 15] (covers your budget of BATCH_SIZE*RETRIES=15).
+    """
+    if k_values is None:
+        k_values = [1, 2, 3, 5, 10, 15]
+    return {k: pass_at_k_global(edges, k) for k in k_values}
+
 
 # ---------------------------------------------------------------------------
 # Collect all metrics into a results dict
@@ -480,6 +549,7 @@ def collect_results(
             "root_level_depth_of_success":         global_root_level_depth_of_success(edges),
             "mutation_efficiency_index":           mutation_efficiency_index(edges, embedder),
             "semantic_drift_rate":                 compute_semantic_drift_rate(edges, embedder),
+            "pass_at_k":                           pass_at_k_sweep(edges, k_values=[1, 3, 5, 10, 15]),
         }
     }
 
@@ -494,6 +564,7 @@ def collect_results(
         root_depth_per  = root_level_depth_of_success_per_operator(grouped)
         mei_per         = mei_per_operator(grouped, embedder)
         drift_per       = drift_rate_per_operator(grouped, embedder)
+        pass_per        = pass_at_k_per_operator(grouped, k=5)
 
         results["per_operator"] = {
             name: {
@@ -508,6 +579,7 @@ def collect_results(
                 "root_level_depth_of_success":      root_depth_per.get(name, {}),
                 "mutation_efficiency_index":        mei_per[name],
                 "semantic_drift_rate":              drift_per[name],
+                "pass_at_k":                        pass_per.get(name, {}),
             }
             for name, es in grouped.items()
         }

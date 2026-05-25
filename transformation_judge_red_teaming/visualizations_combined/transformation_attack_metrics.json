@@ -1,0 +1,481 @@
+{
+  "global": {
+    "num_edges": 88536,
+    "num_unique_root_prompts": 3079,
+    "edge_level_asr": 0.4147465437788018,
+    "root_level_asr": 0.9922052614485223,
+    "edge_level_semantic_preservation": {
+      "mean": 0.5849796354274284,
+      "std": 0.18027950682429988
+    },
+    "root_level_semantic_preservation": {
+      "mean": 0.5369638640288451,
+      "std": 0.1649934339294526
+    },
+    "edge_level_jco": 0.2211226612330998,
+    "root_level_jco": 0.6400802966670659,
+    "edge_level_depth_of_success": {
+      "mean": 2.3788943355119825,
+      "max": 5
+    },
+    "root_level_depth_of_success": {
+      "mean": 0.2409165302782324,
+      "max": 4
+    },
+    "mutation_efficiency_index": 0.13241853517395402,
+    "semantic_drift_rate": {
+      "mean": 0.14347915546400966,
+      "std": 0.21458567474651488
+    }
+  },
+  "per_operator": {
+    "Philosophical/Ethical Inquiry": {
+      "num_edges": 1851,
+      "edge_level_asr": 0.7309562398703403,
+      "root_level_asr": 0.9961832061068703,
+      "edge_level_semantic_preservation": {
+        "mean": 0.5454900317369024,
+        "std": 0.18033391456114092
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5339802162567993,
+        "std": 0.13809129677666993
+      },
+      "edge_level_jco": 0.37957062041120293,
+      "root_level_jco": 0.6110815751643581,
+      "edge_level_depth_of_success": {
+        "mean": 1.033259423503326,
+        "median": 1.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.04597701149425287,
+        "median": 0.0
+      },
+      "mutation_efficiency_index": 0.3230265897328217,
+      "semantic_drift_rate": {
+        "mean": 0.3396529887175476,
+        "std": 0.23784770794375168
+      }
+    },
+    "News": {
+      "num_edges": 6552,
+      "edge_level_asr": 0.4314713064713065,
+      "root_level_asr": 0.9911894273127754,
+      "edge_level_semantic_preservation": {
+        "mean": 0.6668085399847387,
+        "std": 0.16273684065788452
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.6099969445810218,
+        "std": 0.16320917962911805
+      },
+      "edge_level_jco": 0.26928628371859037,
+      "root_level_jco": 0.6801611200171945,
+      "edge_level_depth_of_success": {
+        "mean": 2.629642730810046,
+        "median": 2.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.3244444444444444,
+        "median": 0.0
+      },
+      "mutation_efficiency_index": 0.14636600189830912,
+      "semantic_drift_rate": {
+        "mean": 0.11277738912855485,
+        "std": 0.1790162981421982
+      }
+    },
+    "Euphemistic Reduction": {
+      "num_edges": 20166,
+      "edge_level_asr": 0.21794108896161857,
+      "root_level_asr": 0.9473684210526315,
+      "edge_level_semantic_preservation": {
+        "mean": 0.6331370886087161,
+        "std": 0.15595908759732033
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5857161679988285,
+        "std": 0.1551773271445301
+      },
+      "edge_level_jco": 0.12040312643652722,
+      "root_level_jco": 0.6370762457749001,
+      "edge_level_depth_of_success": {
+        "mean": 3.265301478953356,
+        "median": 4.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.6190476190476191,
+        "median": 0.0
+      },
+      "mutation_efficiency_index": 0.05272841130513948,
+      "semantic_drift_rate": {
+        "mean": 0.06516433845317654,
+        "std": 0.13188040523897368
+      }
+    },
+    "Always Safe": {
+      "num_edges": 1818,
+      "edge_level_asr": 0.6083608360836084,
+      "root_level_asr": 1.0,
+      "edge_level_semantic_preservation": {
+        "mean": 0.6045008513469934,
+        "std": 0.16909334067914672
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5515370122752252,
+        "std": 0.1587838228579462
+      },
+      "edge_level_jco": 0.3445040353023672,
+      "root_level_jco": 0.6359869036158281,
+      "edge_level_depth_of_success": {
+        "mean": 1.3318264014466545,
+        "median": 0.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.022321428571428572,
+        "median": 0.0
+      },
+      "mutation_efficiency_index": 0.2604895748528623,
+      "semantic_drift_rate": {
+        "mean": 0.22912200599113772,
+        "std": 0.25255138010258016
+      }
+    },
+    "Checklist Abstraction": {
+      "num_edges": 7074,
+      "edge_level_asr": 0.48968052021487135,
+      "root_level_asr": 0.9844357976653697,
+      "edge_level_semantic_preservation": {
+        "mean": 0.5348443852423945,
+        "std": 0.16315199646423623
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5219981770028689,
+        "std": 0.15974875972308533
+      },
+      "edge_level_jco": 0.2369945985631075,
+      "root_level_jco": 0.6352729647192046,
+      "edge_level_depth_of_success": {
+        "mean": 2.4390877598152425,
+        "median": 2.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.6521739130434783,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.14744140686976,
+      "semantic_drift_rate": {
+        "mean": 0.17820204122140498,
+        "std": 0.22599847067486026
+      }
+    },
+    "Analogy Transform": {
+      "num_edges": 3774,
+      "edge_level_asr": 0.5100688924218336,
+      "root_level_asr": 0.9959677419354839,
+      "edge_level_semantic_preservation": {
+        "mean": 0.5112371718669907,
+        "std": 0.22057148915959343
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.4578785319502732,
+        "std": 0.15078431471900675
+      },
+      "edge_level_jco": 0.24573406975797293,
+      "root_level_jco": 0.5689827185725013,
+      "edge_level_depth_of_success": {
+        "mean": 2.0633766233766235,
+        "median": 1.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.13360323886639677,
+        "median": 0.0
+      },
+      "mutation_efficiency_index": 0.15542511646784718,
+      "semantic_drift_rate": {
+        "mean": 0.22053905067226057,
+        "std": 0.2837544052244489
+      }
+    },
+    "Prepend and Append Benign": {
+      "num_edges": 1506,
+      "edge_level_asr": 0.7463479415670651,
+      "root_level_asr": 1.0,
+      "edge_level_semantic_preservation": {
+        "mean": 0.5083779371881568,
+        "std": 0.21601955006070567
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.43813372751542906,
+        "std": 0.17581649716914802
+      },
+      "edge_level_jco": 0.34700579506037127,
+      "root_level_jco": 0.5583402592202892,
+      "edge_level_depth_of_success": {
+        "mean": 0.8113879003558719,
+        "median": 1.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.05652173913043478,
+        "median": 0.0
+      },
+      "mutation_efficiency_index": 0.30473070793297435,
+      "semantic_drift_rate": {
+        "mean": 0.4151248450008818,
+        "std": 0.2816260267141922
+      }
+    },
+    "Third-Person Distance": {
+      "num_edges": 9213,
+      "edge_level_asr": 0.39693910778248126,
+      "root_level_asr": 0.9864253393665159,
+      "edge_level_semantic_preservation": {
+        "mean": 0.589881293603403,
+        "std": 0.15714004253105285
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.6183073611144403,
+        "std": 0.15138331911880776
+      },
+      "edge_level_jco": 0.22396401860993317,
+      "root_level_jco": 0.7163178756226242,
+      "edge_level_depth_of_success": {
+        "mean": 3.0218758545255673,
+        "median": 3.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.5871559633027523,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.11104356264611621,
+      "semantic_drift_rate": {
+        "mean": 0.10117751885515645,
+        "std": 0.17189366931127623
+      }
+    },
+    "Append Benign": {
+      "num_edges": 1917,
+      "edge_level_asr": 0.5706833594157538,
+      "root_level_asr": 0.9953917050691244,
+      "edge_level_semantic_preservation": {
+        "mean": 0.5598777098110919,
+        "std": 0.2098238391169709
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.45065927481117435,
+        "std": 0.18672947955592772
+      },
+      "edge_level_jco": 0.275033734219482,
+      "root_level_jco": 0.549510787193951,
+      "edge_level_depth_of_success": {
+        "mean": 1.3775137111517368,
+        "median": 0.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.05092592592592592,
+        "median": 0.0
+      },
+      "mutation_efficiency_index": 0.2052485303283988,
+      "semantic_drift_rate": {
+        "mean": 0.2684786521120849,
+        "std": 0.2898839252520284
+      }
+    },
+    "Scientific Abstraction": {
+      "num_edges": 7803,
+      "edge_level_asr": 0.35255670895809305,
+      "root_level_asr": 0.9666666666666667,
+      "edge_level_semantic_preservation": {
+        "mean": 0.5703657740555436,
+        "std": 0.17366755894947816
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5726419606400353,
+        "std": 0.14911270100312646
+      },
+      "edge_level_jco": 0.19274788751948052,
+      "root_level_jco": 0.6413069574605851,
+      "edge_level_depth_of_success": {
+        "mean": 2.816793893129771,
+        "median": 3.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.47783251231527096,
+        "median": 0.0
+      },
+      "mutation_efficiency_index": 0.10047021894562355,
+      "semantic_drift_rate": {
+        "mean": 0.10682716607803047,
+        "std": 0.18065396168694917
+      }
+    },
+    "Hypothetical Scenario": {
+      "num_edges": 1413,
+      "edge_level_asr": 0.7275300778485492,
+      "root_level_asr": 1.0,
+      "edge_level_semantic_preservation": {
+        "mean": 0.5113679985532251,
+        "std": 0.14385437530362974
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5026851335204686,
+        "std": 0.12072851056000027
+      },
+      "edge_level_jco": 0.35902377041893824,
+      "root_level_jco": 0.5889922005699036,
+      "edge_level_depth_of_success": {
+        "mean": 0.8249027237354085,
+        "median": 0.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.02553191489361702,
+        "median": 0.0
+      },
+      "mutation_efficiency_index": 0.3130628957409402,
+      "semantic_drift_rate": {
+        "mean": 0.3571259791989826,
+        "std": 0.24659764794012606
+      }
+    },
+    "Bullet Points": {
+      "num_edges": 7284,
+      "edge_level_asr": 0.47748489840746844,
+      "root_level_asr": 0.9839357429718876,
+      "edge_level_semantic_preservation": {
+        "mean": 0.6131666148979501,
+        "std": 0.187366327228058
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5784262401412054,
+        "std": 0.15383406071983632
+      },
+      "edge_level_jco": 0.2557705791313191,
+      "root_level_jco": 0.6815227528652513,
+      "edge_level_depth_of_success": {
+        "mean": 2.4312823461759634,
+        "median": 2.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.6979591836734694,
+        "median": 1.0
+      },
+      "mutation_efficiency_index": 0.15560213189755187,
+      "semantic_drift_rate": {
+        "mean": 0.1543646046466295,
+        "std": 0.19778918472617998
+      }
+    },
+    "Storytelling": {
+      "num_edges": 4164,
+      "edge_level_asr": 0.5235350624399616,
+      "root_level_asr": 1.0,
+      "edge_level_semantic_preservation": {
+        "mean": 0.5574851207476285,
+        "std": 0.17691416510233082
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5269925731094304,
+        "std": 0.16443035706754777
+      },
+      "edge_level_jco": 0.2627064768720586,
+      "root_level_jco": 0.6155437695483367,
+      "edge_level_depth_of_success": {
+        "mean": 2.163302752293578,
+        "median": 2.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.2125,
+        "median": 0.0
+      },
+      "mutation_efficiency_index": 0.17012412417891756,
+      "semantic_drift_rate": {
+        "mean": 0.20415668267270015,
+        "std": 0.255094174801448
+      }
+    },
+    "Legal/Policy Framing": {
+      "num_edges": 5403,
+      "edge_level_asr": 0.42309827873403666,
+      "root_level_asr": 0.99581589958159,
+      "edge_level_semantic_preservation": {
+        "mean": 0.5107272859645878,
+        "std": 0.17342722361047339
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.5582756627614289,
+        "std": 0.15646403538845774
+      },
+      "edge_level_jco": 0.2135965885600003,
+      "root_level_jco": 0.639643154757791,
+      "edge_level_depth_of_success": {
+        "mean": 2.4230096237970256,
+        "median": 2.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.19747899159663865,
+        "median": 0.0
+      },
+      "mutation_efficiency_index": 0.13362431577965594,
+      "semantic_drift_rate": {
+        "mean": 0.13913736078893693,
+        "std": 0.21007129972303368
+      }
+    },
+    "Metaphorical Reframing": {
+      "num_edges": 4008,
+      "edge_level_asr": 0.4009481037924152,
+      "root_level_asr": 0.9911894273127754,
+      "edge_level_semantic_preservation": {
+        "mean": 0.515254090775033,
+        "std": 0.21952857933233014
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.4463716192732898,
+        "std": 0.17770159548632913
+      },
+      "edge_level_jco": 0.19940045394050793,
+      "root_level_jco": 0.5246984558877441,
+      "edge_level_depth_of_success": {
+        "mean": 2.1076540136901056,
+        "median": 2.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.1511111111111111,
+        "median": 0.0
+      },
+      "mutation_efficiency_index": 0.11986800568497102,
+      "semantic_drift_rate": {
+        "mean": 0.17686668273638712,
+        "std": 0.268455209527807
+      }
+    },
+    "Role Reversal (Expert/Historian)": {
+      "num_edges": 4590,
+      "edge_level_asr": 0.5326797385620915,
+      "root_level_asr": 0.9959839357429718,
+      "edge_level_semantic_preservation": {
+        "mean": 0.6044715140347647,
+        "std": 0.16754730788554473
+      },
+      "root_level_semantic_preservation": {
+        "mean": 0.6357348449634477,
+        "std": 0.14567324404564974
+      },
+      "edge_level_jco": 0.30879819684688303,
+      "root_level_jco": 0.699850461449489,
+      "edge_level_depth_of_success": {
+        "mean": 2.4993865030674844,
+        "median": 2.0
+      },
+      "root_level_depth_of_success": {
+        "mean": 0.20161290322580644,
+        "median": 0.0
+      },
+      "mutation_efficiency_index": 0.18615815655646892,
+      "semantic_drift_rate": {
+        "mean": 0.1452199146963153,
+        "std": 0.18378272531363568
+      }
+    }
+  }
+}

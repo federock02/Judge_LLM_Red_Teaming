@@ -37,6 +37,9 @@ from metrics import (
     save_results_json,
     semantic_preservation,
     semantic_preservation_per_operator,
+    pass_at_k_per_operator,
+    pass_at_k_global,
+    pass_at_k_sweep,
 )
 from persona_clustering import (
     FIELD_WEIGHTS,
@@ -49,6 +52,7 @@ from persona_clustering import (
 from plots import (
     build_color_map,
     plot_asr,
+    plot_asr_sorted,
     plot_asr_sp_heatmap,
     plot_asr_vs_sp,
     plot_cumulative_metrics_vs_depth,
@@ -57,12 +61,16 @@ from plots import (
     plot_drift_rate,
     plot_drift_sorted,
     plot_jco,
+    plot_jco_sorted,
     plot_mei,
+    plot_mei_sorted,
     plot_root_depth_sorted,
     plot_semantic_preservation,
     plot_semantic_preservation_violin,
     plot_sp_sorted,
     plot_success_vs_sp,
+    plot_pass_at_k_sweep,
+    plot_pass_at_k_per_operator,
 )
 
 
@@ -159,7 +167,6 @@ def load_edges(
 
     all_edges: List[MutationEdge] = []
     for path in paths:
-        print(f"[LOAD] Loading edges from: {path}")
         all_edges.extend(load_persona_edges_from_archive(str(path), strict=strict))
 
     unique_personas = len({e.operator_name for e in all_edges})
@@ -242,7 +249,7 @@ def main_analysis(
     do_cluster: bool = False,
 ) -> None:
     edges_raw = load_edges(archive_path)
-    embedder  = EmbeddingCache(device="cuda:0")
+    embedder  = EmbeddingCache()
 
     if do_cluster:
         _run_clustered_analysis(edges_raw, embedder, vis_dir)
@@ -256,6 +263,14 @@ def _run_clustered_analysis(
     vis_dir: str,
 ) -> None:
     """Cluster personas with HDBSCAN, then run per-cluster metric plots."""
+    # Pre-warm embedding cache before clustering and metric computation
+    all_texts = list({
+        t for e in edges_raw
+        for t in (e.root_prompt, e.parent_prompt, e.child_prompt)
+    })
+    embedder.batch_embed(all_texts)
+    print(f"[ANALYSIS] Embedding cache warmed with {len(all_texts)} unique texts.", flush=True)
+
     clustering = cluster_personas_hdbscan(
         edges_raw, embedder,
         field_weights=FIELD_WEIGHTS,
@@ -307,15 +322,24 @@ def _run_flat_analysis(
     """
     print("[ANALYSIS] Running flat (no-cluster) persona analysis.")
 
-    # Pre-warm embedding cache with all unique texts in a single batched call.
-    # Without this, embed() is called ~15k+ times individually in the metric
-    # loops, each invoking model.encode() on a single string — extremely slow.
+    # Pre-warm embedding cache
     all_texts = list({
         t for e in edges
         for t in (e.root_prompt, e.parent_prompt, e.child_prompt)
     })
     embedder.batch_embed(all_texts)
     print(f"[ANALYSIS] Embedding cache warmed with {len(all_texts)} unique texts.", flush=True)
+
+    grouped = group_edges_by_operator(edges)
+
+    # ---- Sorted ASR distributions
+    asr_per      = attack_success_rate_per_operator(grouped)
+    root_asr_per = root_level_asr_per_operator(grouped)
+    asr_sorted      = sorted(asr_per.items(),      key=lambda x: x[1], reverse=True)
+    root_asr_sorted = sorted(root_asr_per.items(), key=lambda x: x[1], reverse=True)
+    plot_asr_sorted(asr_sorted,      vis_dir, level="edge", color="#e67e22")
+    plot_asr_sorted(root_asr_sorted, vis_dir, level="root", color="#d35400")
+    print("[ANALYSIS] ASR sorted done.")
 
     # ---- Sorted SP distributions
     edge_sp = _sp_sorted_per_persona(edges, embedder, level="edge")
@@ -325,6 +349,21 @@ def _run_flat_analysis(
     root_sp = _sp_sorted_per_persona(edges, embedder, level="root")
     plot_sp_sorted(root_sp, vis_dir, level="root", color="#2d39bd")
     print("[ANALYSIS] SP_R sorted done.")
+
+    # ---- Sorted JCO distributions
+    jco_per      = jco_per_operator(grouped, embedder)
+    root_jco_per = root_level_jco_per_operator(grouped, embedder)
+    jco_sorted      = sorted(jco_per.items(),      key=lambda x: x[1], reverse=True)
+    root_jco_sorted = sorted(root_jco_per.items(), key=lambda x: x[1], reverse=True)
+    plot_jco_sorted(jco_sorted,      vis_dir, level="edge", color="#16a085")
+    plot_jco_sorted(root_jco_sorted, vis_dir, level="root", color="#0e6655")
+    print("[ANALYSIS] JCO sorted done.")
+
+    # ---- Sorted MEI distribution
+    mei_per    = mei_per_operator(grouped, embedder)
+    mei_sorted = sorted(mei_per.items(), key=lambda x: x[1], reverse=True)
+    plot_mei_sorted(mei_sorted, vis_dir, color="#8e44ad")
+    print("[ANALYSIS] MEI sorted done.")
 
     # ---- Sorted depth distributions
     edge_depth = _depth_sorted_per_persona(edges)
@@ -353,8 +392,13 @@ def _run_flat_analysis(
     plot_success_vs_sp(edges, embedder, vis_dir)
     print("[ANALYSIS] Success vs SP scatter done.")
 
-    # ---- Global metrics JSON (no per-operator breakdown)
-    results = collect_results(edges, grouped=None, embedder=embedder)
+    # --- Pass @ k
+    pak = pass_at_k_sweep(edges)
+    plot_pass_at_k_sweep(pak, vis_dir, color="#2980b9")
+    print("[ANALYSIS] Pass@k done.")
+
+    # ---- Global metrics JSON (with per-operator breakdown now available)
+    results = collect_results(edges, grouped, embedder)
     save_results_json(results, os.path.join(vis_dir, "persona_attack_metrics.json"))
     print("[ANALYSIS] Metrics JSON saved.")
 
@@ -423,6 +467,16 @@ def _run_per_operator_plots(
     plot_success_vs_sp(edges, embedder, vis_dir)
     print("[ANALYSIS] Success vs SP scatter done.")
 
+    # Pass @ k
+    # Pass@k
+    pak_per_op = pass_at_k_per_operator(grouped)
+    plot_pass_at_k_sweep(
+        pass_at_k_sweep(edges),
+        vis_dir, color="#2980b9",
+    )
+    plot_pass_at_k_per_operator(pak_per_op, vis_dir, color_map)
+    print("[ANALYSIS] Pass@k done.")
+
 
 # ---------------------------------------------------------------------------
 # Entry point
@@ -434,10 +488,10 @@ if __name__ == "__main__":
                         help="Path to a single red-teaming JSON archive")
     parser.add_argument("--results_folders", type=str, nargs="+", default=None,
                         help="One or more folders each containing red_teaming_archive.json")
+    parser.add_argument("--vis_dir", type=str, default="visualizations_combined",
+                        help="Directory to save visualizations and metrics JSON")
     parser.add_argument("--cluster", action="store_true",
                         help="Run HDBSCAN clustering + UMAP before plotting")
-    parser.add_argument("--vis_dir", type=str, default="visualizations",
-                        help="Directory to save visualizations and metrics JSON")
     args = parser.parse_args()
 
     if args.results_archive is not None:

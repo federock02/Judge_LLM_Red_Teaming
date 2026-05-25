@@ -40,6 +40,7 @@ def _bar(
     *,
     yerr: Optional[List[float]] = None,
     yticks=None,
+    ylim: Optional[tuple] = None,
     add_average: bool = True,
     color_map: Optional[dict] = None,
 ):
@@ -67,6 +68,8 @@ def _bar(
         plt.yticks(yticks, fontsize=18)
     else:
         plt.yticks(fontsize=18)
+    if ylim is not None:
+        plt.ylim(*ylim)
     plt.title(title, fontsize=24)
     plt.grid(axis="y", alpha=0.3)
     plt.tight_layout()
@@ -96,7 +99,7 @@ def plot_asr(
     )
     fname = f"{'edge' if level == 'edge' else 'root'}_level_asr_per_operator.png"
     _bar(names, values, colors, label, title, os.path.join(vis_dir, fname),
-         add_average=True, color_map=color_map)
+         ylim=(0, 1), add_average=True, color_map=color_map)
 
 
 # ---------------------------------------------------------------------------
@@ -122,7 +125,7 @@ def plot_semantic_preservation(
     )
     fname = f"{'edge' if level == 'edge' else 'root'}_level_sp_per_operator.png"
     _bar(names, means, colors, label, title, os.path.join(vis_dir, fname),
-         yerr=stds, add_average=True, color_map=color_map)
+         yerr=stds, ylim=(0, 1), add_average=True, color_map=color_map)
 
 
 def plot_semantic_preservation_violin(
@@ -145,6 +148,7 @@ def plot_semantic_preservation_violin(
     plt.xticks(range(1, len(labels) + 1), labels, rotation=45, ha="right", fontsize=22)
     plt.ylabel("SP_G", fontsize=24)
     plt.yticks(fontsize=20)
+    plt.ylim(0, 1)
     plt.title("SP Distribution per Operator (SP_G)", fontsize=22)
     plt.grid(axis="y", alpha=0.3)
     plt.tight_layout()
@@ -173,7 +177,7 @@ def plot_sp_sorted(
     plt.xlabel(f"Operators sorted by {label}", fontsize=22)
     plt.xticks([])
     plt.yticks(fontsize=18)
-    plt.ylim(0, 1.1)
+    plt.ylim(0, 1)
     plt.title(f"Distribution of {label} across all Operators", fontsize=24)
     plt.legend(fontsize=18)
     plt.grid(axis="y", alpha=0.3)
@@ -204,7 +208,7 @@ def plot_jco(
     )
     fname = f"{'edge' if level == 'edge' else 'root'}_level_jco_per_operator.png"
     _bar(names, values, colors, label, title, os.path.join(vis_dir, fname),
-         yticks=np.arange(0, 0.9, 0.1), add_average=True, color_map=color_map)
+         yticks=np.arange(0, 1.1, 0.1), ylim=(0, 1), add_average=True, color_map=color_map)
 
 
 # ---------------------------------------------------------------------------
@@ -334,6 +338,92 @@ def plot_drift_sorted(sorted_data: List[tuple], vis_dir: str, *, color: str = "#
     plt.close()
 
 
+def plot_asr_sorted(
+    sorted_data: List[tuple],
+    vis_dir: str,
+    *,
+    level: str = "edge",
+    color: str = "#e67e22",
+) -> None:
+    """Sorted-bar ASR distribution for large operator sets."""
+    values = [v for _, v in sorted_data]
+    avg    = float(np.mean(values)) if values else 0.0
+    label  = "ASR_G" if level == "edge" else "ASR_R"
+    fname  = f"{'edge' if level == 'edge' else 'root'}_asr_sorted.png"
+
+    plt.figure(figsize=(20, 8))
+    plt.bar(np.arange(len(values)), values, color=color, width=1.0, linewidth=0, edgecolor="none")
+    plt.axhline(avg, color="black", linestyle="--", linewidth=2,
+                label=f"AVERAGE {label} ({avg:.3f})")
+    plt.ylabel(label, fontsize=22)
+    plt.xlabel(f"Operators sorted by {label}", fontsize=20)
+    plt.xticks([])
+    plt.yticks(fontsize=18)
+    plt.ylim(0, 1)
+    plt.title(f"Attack Success Rate — {label} (sorted)", fontsize=24)
+    plt.legend(fontsize=18)
+    plt.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(os.path.join(vis_dir, fname), dpi=300)
+    plt.close()
+
+
+def plot_jco_sorted(
+    sorted_data: List[tuple],
+    vis_dir: str,
+    *,
+    level: str = "edge",
+    color: str = "#16a085",
+) -> None:
+    """Sorted-bar JCO distribution for large operator sets."""
+    values = [v for _, v in sorted_data]
+    avg    = float(np.mean(values)) if values else 0.0
+    label  = "JCO_G" if level == "edge" else "JCO_R"
+    fname  = f"{'edge' if level == 'edge' else 'root'}_jco_sorted.png"
+
+    plt.figure(figsize=(20, 8))
+    plt.bar(np.arange(len(values)), values, color=color, width=1.0, linewidth=0, edgecolor="none")
+    plt.axhline(avg, color="black", linestyle="--", linewidth=2,
+                label=f"AVERAGE {label} ({avg:.3f})")
+    plt.ylabel(label, fontsize=22)
+    plt.xlabel(f"Operators sorted by {label}", fontsize=20)
+    plt.xticks([])
+    plt.yticks(fontsize=18)
+    plt.ylim(0, 1)
+    plt.title(f"Judge Consistency Obfuscation — {label} (sorted)", fontsize=24)
+    plt.legend(fontsize=18)
+    plt.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(os.path.join(vis_dir, fname), dpi=300)
+    plt.close()
+
+
+def plot_mei_sorted(
+    sorted_data: List[tuple],
+    vis_dir: str,
+    *,
+    color: str = "#8e44ad",
+) -> None:
+    """Sorted-bar MEI distribution for large operator sets."""
+    values = [v for _, v in sorted_data]
+    avg    = float(np.mean(values)) if values else 0.0
+
+    plt.figure(figsize=(20, 8))
+    plt.bar(np.arange(len(values)), values, color=color, width=1.0, linewidth=0, edgecolor="none")
+    plt.axhline(avg, color="black", linestyle="--", linewidth=2,
+                label=f"AVERAGE MEI ({avg:.3f})")
+    plt.ylabel("MEI", fontsize=22)
+    plt.xlabel("Operators sorted by MEI", fontsize=20)
+    plt.xticks([])
+    plt.yticks(fontsize=18)
+    plt.title("Mutation Efficiency Index (sorted)", fontsize=24)
+    plt.legend(fontsize=18)
+    plt.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(os.path.join(vis_dir, "mei_sorted.png"), dpi=300)
+    plt.close()
+
+
 # ---------------------------------------------------------------------------
 # ASR vs SP
 # ---------------------------------------------------------------------------
@@ -440,7 +530,7 @@ def plot_success_vs_sp(
     plt.xlabel("Attack Success", fontsize=22)
     plt.xticks([0, 1], ["Failure", "Success"], fontsize=20)
     plt.yticks(fontsize=18)
-    plt.ylim(0, 1.1)
+    plt.ylim(0, 1)
     plt.xlim(-0.5, 1.5)
     plt.grid(axis="y", linestyle="--", alpha=0.3)
     plt.legend(fontsize=16, loc="lower center", ncol=2)
@@ -475,4 +565,86 @@ def plot_cumulative_metrics_vs_depth(
     plt.legend(fontsize=16)
     plt.tight_layout()
     plt.savefig(os.path.join(vis_dir, "cumulative_metrics_vs_depth.png"), dpi=200)
+    plt.close()
+
+# ---------------------------------------------------------------------------
+# Pass@K plots
+# ---------------------------------------------------------------------------
+def plot_pass_at_k_sweep(
+    sweep_data: Dict[int, Dict[str, float]], 
+    vis_dir: str,
+    color: str = "#2980b9"
+) -> None:
+    """
+    Plots the cumulative success probability as the budget k increases.
+    sweep_data: The 'pass_at_k_sweep' dict from your 'global' results.
+    """
+    # Sort k values to ensure the line plots correctly
+    ks = sorted([int(k) for k in sweep_data.keys()])
+    means = [sweep_data[k]["mean"] for k in ks]
+    stds = [sweep_data[k]["std"] for k in ks]
+
+    plt.figure(figsize=(10, 7))
+    
+    # Plot mean line
+    plt.plot(ks, means, marker='o', markersize=10, linewidth=3, 
+             color=color, label='Mean Pass@k')
+    
+    # Plot standard deviation as a shaded area (optional but professional)
+    plt.fill_between(ks, 
+                     [m - s for m, s in zip(means, stds)], 
+                     [m + s for m, s in zip(means, stds)], 
+                     color=color, alpha=0.2)
+
+    plt.xlabel("Budget (k samples)", fontsize=18)
+    plt.ylabel("Probability of Success", fontsize=18)
+    plt.title("Adversarial Pass@k Distribution", fontsize=20)
+    
+    plt.xticks(ks, fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.ylim(0, 1.05)
+    plt.grid(alpha=0.3, linestyle='--')
+    plt.legend(fontsize=14, loc="lower right")
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(vis_dir, "global_pass_at_k_sweep.png"), dpi=300)
+    plt.close()
+
+def plot_pass_at_k_per_operator(
+    results: dict,
+    vis_dir: str,
+    k_val: int = 5
+) -> None:
+    """
+    Compares the efficiency of different operators at a fixed k.
+    """
+    op_data = results.get("per_operator", {})
+    names = []
+    values = []
+
+    for name, metrics in op_data.items():
+        key = f"pass_at_k_{k_val}"
+        if key in metrics:
+            names.append(name)
+            values.append(metrics[key]["mean"])
+
+    # Sort by value for better visualization
+    sorted_pairs = sorted(zip(names, values), key=lambda x: x[1], reverse=True)
+    names, values = zip(*sorted_pairs) if sorted_pairs else ([], [])
+
+    plt.figure(figsize=(14, 8))
+    bars = plt.bar(names, values, color="#34495e")
+    
+    plt.axhline(results["global"]["pass_at_k_sweep"].get(k_val, {}).get("mean", 0), 
+                color="red", linestyle="--", label=f"Global Avg Pass@{k_val}")
+
+    plt.ylabel(f"Pass@{k_val} Success Rate", fontsize=18)
+    plt.xticks(rotation=45, ha="right", fontsize=12)
+    plt.title(f"Operator Efficiency (Pass@{k_val})", fontsize=20)
+    plt.legend(fontsize=14)
+    plt.ylim(0, 1)
+    plt.grid(axis='y', alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(vis_dir, f"per_operator_pass_at_k_{k_val}.png"), dpi=300)
     plt.close()
