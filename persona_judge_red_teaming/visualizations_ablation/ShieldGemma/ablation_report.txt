@@ -1,0 +1,83 @@
+=== ABLATION ANALYSIS (PERSONA) ===
+Input archive(s) [2, pooled]:
+  - results/ShieldGemma/20260706_225315/red_teaming_archive.json
+  - results/ShieldGemma/20260707_230426/red_teaming_archive.json
+
+--- Per-config results (score mode x history) ---
+
+Config: Normal (with history)
+  Total Runs:             94
+  ASR@1:                  87.23%
+  ASR@<5:                 98.94%
+  Overall ASR:            100.00%
+  Avg Depth of Success:   1.23
+  Median Depth of Success:1.00
+
+Config: Normal (no history)
+  Total Runs:             94
+  ASR@1:                  87.23%
+  ASR@<5:                 100.00%
+  Overall ASR:            100.00%
+  Avg Depth of Success:   1.15
+  Median Depth of Success:1.00
+
+Config: Random (with history)
+  Total Runs:             94
+  ASR@1:                  87.23%
+  ASR@<5:                 100.00%
+  Overall ASR:            100.00%
+  Avg Depth of Success:   1.19
+  Median Depth of Success:1.00
+
+Config: Random (no history)
+  Total Runs:             94
+  ASR@1:                  87.23%
+  ASR@<5:                 100.00%
+  Overall ASR:            100.00%
+  Avg Depth of Success:   1.16
+  Median Depth of Success:1.00
+
+Config: None (with history)
+  Total Runs:             94
+  ASR@1:                  87.23%
+  ASR@<5:                 98.94%
+  Overall ASR:            100.00%
+  Avg Depth of Success:   1.23
+  Median Depth of Success:1.00
+
+Config: None (no history)
+  Total Runs:             94
+  ASR@1:                  87.23%
+  ASR@<5:                 100.00%
+  Overall ASR:            100.00%
+  Avg Depth of Success:   1.17
+  Median Depth of Success:1.00
+
+=== HISTORY EFFECT (per score mode) ===
+Overall ASR: how much the previous-attempt context helps, holding score mode fixed.
+Score mode    +History  −History  Δ(+H − −H)
+Normal          100.00    100.00       +0.00
+Random          100.00    100.00       +0.00
+None            100.00    100.00       +0.00
+AVERAGE         100.00    100.00       +0.00
+
+ASR@1 (same axis, depth-1 successes only):
+Score mode    +History  −History  Δ(+H − −H)
+Normal           87.23     87.23       +0.00
+Random           87.23     87.23       +0.00
+None             87.23     87.23       +0.00
+
+=== SCORE-MODE EFFECT (per history setting) ===
+Overall ASR per score mode; Δ columns are relative to the `normal` (true-score) baseline.
+
+  [with history]  baseline = normal
+  Score mode   Overall ASR   Δ vs normal
+  Normal            100.00    (baseline)
+  Random            100.00         +0.00
+  None              100.00         +0.00
+
+  [no history]  baseline = normal
+  Score mode   Overall ASR   Δ vs normal
+  Normal            100.00    (baseline)
+  Random            100.00         +0.00
+  None              100.00         +0.00

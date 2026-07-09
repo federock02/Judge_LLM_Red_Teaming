@@ -31,8 +31,8 @@ class RedLLM:
 
     # Max new tokens per generation type
     MAX_NEW_TOKENS = {
-        "mutation":    512,
-        "refinement":  512,
+        "mutation":    250, #512,
+        "refinement":  250, #512,
         "persona":     256,
     }
 

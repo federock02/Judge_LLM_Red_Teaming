@@ -227,3 +227,25 @@ class UnsafeResponseDataset:
         """Extract the first assistant response from an Anthropic HH-RLHF dialogue."""
         match = re.search(r"Assistant:\s*(.*?)(?:\n\s*Human:|\Z)", text, flags=re.DOTALL)
         return match.group(1).strip() if match else ""
+
+
+if __name__ == "__main__":
+    # Initialize the loader
+    loader = UnsafeResponseDataset(verbose=True)
+    dataset = loader.get_dataset()
+
+    # Calculate counts per source
+    counts = {}
+    for entry in dataset:
+        source = entry["source"]
+        counts[source] = counts.get(source, 0) + 1
+
+    # Print a clean summary table
+    print("\n" + "="*40)
+    print(f"{'Source Dataset':<20} | {'Count':<10}")
+    print("-" * 40)
+    for source, count in sorted(counts.items(), key=lambda x: x[1], reverse=True):
+        print(f"{source:<20} | {count:<10}")
+    print("-" * 40)
+    print(f"{'TOTAL':<20} | {len(dataset):<10}")
+    print("="*40)

@@ -8,15 +8,21 @@
         "median": 0.0018310546875,
         "n": 13247
     },
+    "sp_root_mut": {
+        "mean": 0.4580037948234467,
+        "std": 0.1604094784412405,
+        "median": 0.46235811710357666,
+        "n": 13248
+    },
     "sp_dest_root": {
-        "mean": 0.4109483832236446,
-        "std": 0.18940380018191774,
+        "mean": 0.4109483831841365,
+        "std": 0.18940380017155656,
         "median": 0.4200771600008011,
         "n": 13248
     },
     "sp_dest_mut": {
-        "mean": 0.7872297827234258,
-        "std": 0.20779776657336382,
+        "mean": 0.7872297827166771,
+        "std": 0.20779776656240964,
         "median": 0.8781541883945465,
         "n": 13248
     },
@@ -85,157 +91,5 @@
             "n_attempted": 13247,
             "n_recovered": 2575
         }
-    },
-    "recovery_rate_per_operator": {
-        "Scientific Abstraction": 0.25126475548060706,
-        "Checklist Abstraction": 0.1311787072243346,
-        "Third-Person Distance": 0.17472598323662153,
-        "Legal/Policy Framing": 0.1287758346581876,
-        "Bullet Points": 0.15468607825295724,
-        "Append Benign": 0.1111111111111111,
-        "Role Reversal (Expert/Historian)": 0.2681704260651629,
-        "Euphemistic Reduction": 0.13166855845629966,
-        "Storytelling": 0.3015414258188825,
-        "Philosophical/Ethical Inquiry": 0.17100371747211895,
-        "Prepend and Append Benign": 0.0931899641577061,
-        "Always Safe": 0.03597122302158273,
-        "Hypothetical Scenario": 0.26695842450765866,
-        "Analogy Transform": 0.19314285714285714,
-        "News": 0.05555555555555555,
-        "Metaphorical Reframing": 0.3279901356350185
-    },
-    "des_per_operator": {
-        "Scientific Abstraction": {
-            "mean": 0.04842545250414998,
-            "std": 0.15002991029731866,
-            "median": 0.01953125,
-            "n": 1186
-        },
-        "Checklist Abstraction": {
-            "mean": 0.013475708181867128,
-            "std": 0.12848622437734641,
-            "median": 0.0,
-            "n": 1052
-        },
-        "Third-Person Distance": {
-            "mean": 0.013935787611665609,
-            "std": 0.13124126077319545,
-            "median": 0.0,
-            "n": 1551
-        },
-        "Legal/Policy Framing": {
-            "mean": 0.010632980419456105,
-            "std": 0.13315707033257648,
-            "median": 0.0,
-            "n": 629
-        },
-        "Bullet Points": {
-            "mean": 0.02087820259628782,
-            "std": 0.13269549160533775,
-            "median": 0.0,
-            "n": 1099
-        },
-        "Append Benign": {
-            "mean": 0.010005580054389106,
-            "std": 0.10794401295886198,
-            "median": 0.0,
-            "n": 324
-        },
-        "Role Reversal (Expert/Historian)": {
-            "mean": 0.036753422634344654,
-            "std": 0.11839695256124229,
-            "median": 0.029296875,
-            "n": 1596
-        },
-        "Euphemistic Reduction": {
-            "mean": 0.0024653227997692164,
-            "std": 0.12798260881973364,
-            "median": 0.0,
-            "n": 881
-        },
-        "Storytelling": {
-            "mean": 0.09949353388968231,
-            "std": 0.1520519882937394,
-            "median": 0.064453125,
-            "n": 1038
-        },
-        "Philosophical/Ethical Inquiry": {
-            "mean": 0.039956663620959426,
-            "std": 0.13246651324892603,
-            "median": 0.01141357421875,
-            "n": 538
-        },
-        "Prepend and Append Benign": {
-            "mean": 0.019738863873225387,
-            "std": 0.1259679228481211,
-            "median": -9.5367431640625e-05,
-            "n": 279
-        },
-        "Always Safe": {
-            "mean": 0.008893555016826383,
-            "std": 0.07276986368671438,
-            "median": 0.0,
-            "n": 139
-        },
-        "Hypothetical Scenario": {
-            "mean": 0.08608917803941722,
-            "std": 0.1550899360113575,
-            "median": 0.05035400390625,
-            "n": 457
-        },
-        "Analogy Transform": {
-            "mean": 0.02459759303501674,
-            "std": 0.13983283258763773,
-            "median": 0.00077056884765625,
-            "n": 875
-        },
-        "News": {
-            "mean": -0.02841597374039467,
-            "std": 0.09798660199066464,
-            "median": -0.0244140625,
-            "n": 792
-        },
-        "Metaphorical Reframing": {
-            "mean": 0.09460629605482598,
-            "std": 0.16590817339795585,
-            "median": 0.052734375,
-            "n": 811
-        }
-    },
-    "sp_dest_root_per_operator": {
-        "Scientific Abstraction": 0.44063181595338574,
-        "Checklist Abstraction": 0.31339108129961507,
-        "Third-Person Distance": 0.42902031182692774,
-        "Legal/Policy Framing": 0.4044437945634571,
-        "Bullet Points": 0.3956869024083398,
-        "Append Benign": 0.4317836471269896,
-        "Role Reversal (Expert/Historian)": 0.4860369350048095,
-        "Euphemistic Reduction": 0.39500392721405636,
-        "Storytelling": 0.3722712475894403,
-        "Philosophical/Ethical Inquiry": 0.4168173019119909,
-        "Prepend and Append Benign": 0.4136010863214037,
-        "Always Safe": 0.43670283118597897,
-        "Hypothetical Scenario": 0.3818646011552091,
-        "Analogy Transform": 0.34461885687283106,
-        "News": 0.45162905154119465,
-        "Metaphorical Reframing": 0.43494998833851295
-    },
-    "sp_dest_mut_per_operator": {
-        "Scientific Abstraction": 0.7854854887588344,
-        "Checklist Abstraction": 0.683373099922454,
-        "Third-Person Distance": 0.7948759811432572,
-        "Legal/Policy Framing": 0.8071588229962486,
-        "Bullet Points": 0.7092170903528681,
-        "Append Benign": 0.8291841620280419,
-        "Role Reversal (Expert/Historian)": 0.8453677121951317,
-        "Euphemistic Reduction": 0.7767541673749042,
-        "Storytelling": 0.8291745984026003,
-        "Philosophical/Ethical Inquiry": 0.8442192557354399,
-        "Prepend and Append Benign": 0.7825302735344911,
-        "Always Safe": 0.8199015411970426,
-        "Hypothetical Scenario": 0.8147689722951184,
-        "Analogy Transform": 0.7545996445076806,
-        "News": 0.8341934857984082,
-        "Metaphorical Reframing": 0.7586948145571384
     }
 }

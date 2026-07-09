@@ -1,5 +1,5 @@
 from datasets import load_dataset
-from typing import List
+from typing import List, Optional
 
 
 # ---------------------------------------------------------------------------

@@ -356,8 +356,11 @@ def plot_transfer_confusion_matrix(
     # Mask diagonal (undefined: same judge)
     mask = np.eye(n, dtype=bool)
 
-    fig, ax = plt.subplots(figsize=(max(8, 2.5 * n), max(6, 2 * n)))
+    fig, ax = plt.subplots(figsize=(max(6, 1.5 * n), max(5, 1.5 * n)))
     cmap = sns.color_palette("YlOrRd", as_cmap=True)
+
+    ticks = [j[0].upper() for j in judges]
+    
     sns.heatmap(
         matrix,
         mask=mask,
@@ -365,20 +368,28 @@ def plot_transfer_confusion_matrix(
         fmt=".2f",
         cmap=cmap,
         vmin=0, vmax=1,
-        xticklabels=judges,
-        yticklabels=judges,
+        xticklabels=ticks,
+        yticklabels=ticks,
         linewidths=0.5,
-        annot_kws={"size": 20},
+        annot_kws={"size": 26, "weight": "bold"},
         cbar_kws={"shrink": 0.8},
         ax=ax,
     )
-    ax.tick_params(axis='both', which='major', labelsize=5)
-    ax.set_xlabel("Target Judge", fontsize=FS_LABEL)
-    ax.set_ylabel("Source Judge", fontsize=FS_LABEL)
-    ax.set_title(f"{label} — Source → Target", fontsize=FS_TITLE, pad=15)
-    ax.tick_params(axis="x", labelsize=FS_TICK, rotation=0)
-    ax.tick_params(axis="y", labelsize=FS_TICK, rotation=0)
-    ax.collections[0].colorbar.ax.tick_params(labelsize=FS_ANNOT)
+    
+    # --- FIX: Force all annotation numbers to be white ---
+    for text in ax.texts:
+        text.set_color("white")
+    # -----------------------------------------------------
+    
+    ax.tick_params(axis="x", labelsize=24, rotation=0) 
+    ax.tick_params(axis="y", labelsize=24, rotation=0)
+    
+    ax.set_xlabel("Target Judge", fontsize=28)
+    ax.set_ylabel("Source Judge", fontsize=28)
+    # ax.set_title(f"{label} — Source → Target", fontsize=31, pad=20)
+    
+    ax.collections[0].colorbar.ax.tick_params(labelsize=18)
+    
     plt.tight_layout()
     _save(fig, os.path.join(vis_dir, f"confusion_{metric}.png"))
 
@@ -475,33 +486,33 @@ def main() -> None:
               f"Transfer ASR={metrics['transfer_asr']:.1%}  "
               f"Clean ASR={metrics['clean_transfer_asr']:.1%}", flush=True)
 
-        plot_transfer_summary_bar(metrics, pair_vis, source, target)
-        plot_transfer_asr_by_depth(
-            metrics["transfer_asr_by_depth"],
-            pair_vis, source, target,
-        )
-        plot_transfer_asr_by_operator(
-            metrics["transfer_asr_by_operator"],
-            pair_vis, source, target,
-        )
-        plot_score_distributions(results, pair_vis, source, target)
-        plot_score_delta(results, pair_vis, source, target)
-        plot_source_vs_target_scatter(results, pair_vis, source, target)
+        # plot_transfer_summary_bar(metrics, pair_vis, source, target)
+        # plot_transfer_asr_by_depth(
+        #     metrics["transfer_asr_by_depth"],
+        #     pair_vis, source, target,
+        # )
+        # plot_transfer_asr_by_operator(
+        #     metrics["transfer_asr_by_operator"],
+        #     pair_vis, source, target,
+        # )
+        # plot_score_distributions(results, pair_vis, source, target)
+        # plot_score_delta(results, pair_vis, source, target)
+        # plot_source_vs_target_scatter(results, pair_vis, source, target)
 
     if len(all_metrics) < 2:
         print("\n[ANALYSIS] Only one pair found — skipping cross-pair plots.", flush=True)
     else:
         # Cross-pair plots in vis_dir root
         os.makedirs(args.vis_dir, exist_ok=True)
+        # plot_transfer_confusion_matrix(
+        #     all_metrics, args.vis_dir,
+        #     metric="transfer_asr", label="Rough Transfer ASR",
+        # )
         plot_transfer_confusion_matrix(
             all_metrics, args.vis_dir,
-            metric="transfer_asr", label="Transfer ASR",
+            metric="clean_transfer_asr", label="Transfer ASR",
         )
-        plot_transfer_confusion_matrix(
-            all_metrics, args.vis_dir,
-            metric="clean_transfer_asr", label="Clean Transfer ASR",
-        )
-        plot_transfer_asr_bar_all_pairs(all_metrics, args.vis_dir)
+        # plot_transfer_asr_bar_all_pairs(all_metrics, args.vis_dir)
         print("[ANALYSIS] Cross-pair plots saved.", flush=True)
 
     # Save combined metrics JSON

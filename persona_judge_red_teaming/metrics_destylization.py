@@ -450,6 +450,35 @@ def sp_destylized_vs_mutated_per_operator(
     return {op: sp_destylized_vs_mutated(edges, embedder) for op, edges in grouped.items()}
 
 
+def sp_root_vs_mutated(
+    edges: List[DestylizedEdge],
+    embedder: EmbeddingCache,
+) -> Dict[str, float]:
+    """
+    Semantic similarity between the original root prompt and the mutated prompt.
+    This provides the baseline SP_rm before destylization.
+    """
+    scores = [
+        embedder.cosine(e.root_prompt, e.child_prompt)
+        for e in edges
+        if e.root_prompt is not None and e.child_prompt is not None
+    ]
+    if not scores:
+        return {"mean": 0.0, "std": 0.0, "median": 0.0, "n": 0}
+    return {
+        "mean":   float(np.mean(scores)),
+        "std":    float(np.std(scores)),
+        "median": float(np.median(scores)),
+        "n":      len(scores),
+    }
+
+def sp_root_vs_mutated_per_operator(
+    grouped: Dict[str, List[DestylizedEdge]],
+    embedder: EmbeddingCache,
+) -> Dict[str, Dict[str, float]]:
+    return {op: sp_root_vs_mutated(edges, embedder) for op, edges in grouped.items()}
+
+
 # ---------------------------------------------------------------------------
 # Metric 5: Cumulative recovery vs depth
 # ---------------------------------------------------------------------------
@@ -490,6 +519,7 @@ def collect_destylized_results(
         "n_recovered":   sum(1 for e in edges if e.recovered),
         "recovery_rate": recovery_rate(edges),
         "des":           des(edges),
+        "sp_root_mut":   sp_root_vs_mutated(edges, embedder),     # <-- ADDED THIS
         "sp_dest_root":  sp_destylized_vs_root(edges, embedder),
         "sp_dest_mut":   sp_destylized_vs_mutated(edges, embedder),
         "recovery_by_depth": {
@@ -507,6 +537,14 @@ def collect_destylized_results(
         results["des_per_operator"]           = {
             op: v for op, v in des_per_operator(grouped).items()
         }
+        
+        # <-- ADDED THIS BLOCK
+        results["sp_root_mut_per_operator"]   = {
+            op: v["mean"] for op, v in 
+            sp_root_vs_mutated_per_operator(grouped, embedder).items()
+        }
+        # --------------------
+        
         results["sp_dest_root_per_operator"]  = {
             op: v["mean"] for op, v in
             sp_destylized_vs_root_per_operator(grouped, embedder).items()

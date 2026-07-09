@@ -12,6 +12,8 @@ import json
 from math import comb
 
 import numpy as np
+import matplotlib.pyplot as plt
+import os
 from sentence_transformers import SentenceTransformer
 
 
@@ -135,6 +137,45 @@ def root_level_asr_per_operator(
     grouped: Dict[str, List[MutationEdge]],
 ) -> Dict[str, float]:
     return {name: root_level_attack_success_rate(es) for name, es in grouped.items()}
+
+
+# ---------------------------------------------------------------------------
+# Cumulative root ASR
+# ---------------------------------------------------------------------------
+def cumulative_root_asr_by_depth(edges: List[MutationEdge]) -> Dict[int, float]:
+    """
+    Calculates the cumulative ASR up to each depth (ASR@<=d).
+    ASR@1 represents the single-turn static baseline (KTJ proxy).
+    ASR@<=5 represents the fully adaptive optimization framework.
+    """
+    by_root = group_edges_by_root(edges)
+    if not by_root:
+        return {}
+
+    min_success_depth = {}
+    max_depth_in_data = 0
+    
+    for root, es in by_root.items():
+        # Find all successful depths for this root
+        success_depths = [e.refinement_iter for e in es if e.success]
+        if success_depths:
+            min_success_depth[root] = min(success_depths)
+        else:
+            min_success_depth[root] = float('inf')
+        
+        # Track maximum depth explored to size the output dict
+        max_depth_in_data = max(max_depth_in_data, max((e.refinement_iter for e in es), default=0))
+    
+    # Ensure we cover up to depth 5 even if data stops early
+    max_depth = max(5, max_depth_in_data)
+    
+    results = {}
+    for d in range(1, max_depth + 1):
+        # Count roots where the minimum successful depth is <= current depth (d)
+        successes = sum(1 for root, min_d in min_success_depth.items() if min_d <= d)
+        results[d] = successes / len(by_root)
+        
+    return results
 
 
 # ---------------------------------------------------------------------------
@@ -450,6 +491,9 @@ def cumulative_metrics_by_depth(
     asr  = cumulative_asr_by_depth(edges)
     jco  = cumulative_jco_by_depth(edges, embedder)
     pres = cumulative_preservation_by_depth(edges, embedder)
+    print(f"[DEBUG] Cumulative ASR by depth: {asr}")
+    print(f"[DEBUG] Cumulative JCO by depth: {jco}")
+    print(f"[DEBUG] Cumulative Preservation by depth: {pres}")
     return {
         d: {"asr": asr[d], "jco": jco[d], "preservation": pres[d]}
         for d in sorted(asr)
@@ -525,6 +569,233 @@ def pass_at_k_sweep(
 
 
 # ---------------------------------------------------------------------------
+# Correlation analysis helpers
+# ---------------------------------------------------------------------------
+def analyze_prompt_length_correlation(
+    edges: List[MutationEdge],
+    vis_dir: str,
+) -> None:
+    import scipy.stats as stats
+
+    lengths      = [len(e.child_prompt)       for e in edges]
+    scores       = [e.child_fitness            for e in edges]
+    root_lengths = [len(e.root_prompt)         for e in edges]
+    deltas       = [len(e.child_prompt) - len(e.root_prompt) for e in edges]
+
+    r_len_score,  p_len_score  = stats.pearsonr(lengths, scores)
+    r_delta_score, p_delta_score = stats.pearsonr(deltas, scores)
+    r_spear, p_spear = stats.spearmanr(lengths, scores)
+
+    print(f"\n[LENGTH] Pearson  r(length, score)       = {r_len_score:.4f}  p={p_len_score:.4e}")
+    print(f"[LENGTH] Pearson  r(Δlength, score)      = {r_delta_score:.4f}  p={p_delta_score:.4e}")
+    print(f"[LENGTH] Spearman r(length, score)       = {r_spear:.4f}  p={p_spear:.4e}")
+
+    # Split by success
+    succ_len   = [len(e.child_prompt) for e in edges if e.success]
+    fail_len   = [len(e.child_prompt) for e in edges if not e.success]
+    t_stat, p_t = stats.ttest_ind(succ_len, fail_len)
+    print(f"[LENGTH] Success mean length = {np.mean(succ_len):.1f} ± {np.std(succ_len):.1f}")
+    print(f"[LENGTH] Failure mean length = {np.mean(fail_len):.1f} ± {np.std(fail_len):.1f}")
+    print(f"[LENGTH] t-test (succ vs fail length):   t={t_stat:.4f}  p={p_t:.4e}")
+
+    # Save JSON
+    result = {
+        "pearson_length_score":    {"r": r_len_score,   "p": p_len_score},
+        "pearson_delta_length_score": {"r": r_delta_score, "p": p_delta_score},
+        "spearman_length_score":   {"r": r_spear,       "p": p_spear},
+        "mean_length_success":     float(np.mean(succ_len)),
+        "std_length_success":      float(np.std(succ_len)),
+        "mean_length_failure":     float(np.mean(fail_len)),
+        "std_length_failure":      float(np.std(fail_len)),
+        "ttest_success_vs_failure":{"t": t_stat, "p": p_t},
+    }
+    with open(os.path.join(vis_dir, "length_correlation.json"), "w") as f:
+        json.dump(result, f, indent=4)
+
+    # Plot
+    fig, axes = plt.subplots(1, 3, figsize=(22, 7))
+
+    axes[0].scatter(lengths, scores, alpha=0.1, s=8, rasterized=True, color="#3498db")
+    m, b = np.polyfit(lengths, scores, 1)
+    xs = np.linspace(min(lengths), max(lengths), 200)
+    axes[0].plot(xs, m*xs+b, color="red", linewidth=2,
+                 label=f"r={r_len_score:.3f}, p={p_len_score:.2e}")
+    axes[0].set_xlabel("Mutated prompt length (chars)", fontsize=14)
+    axes[0].set_ylabel("Judge score", fontsize=14)
+    axes[0].set_title("Length vs Judge Score", fontsize=16)
+    axes[0].legend(fontsize=12)
+    axes[0].grid(alpha=0.3)
+
+    axes[1].scatter(deltas, scores, alpha=0.1, s=8, rasterized=True, color="#e67e22")
+    m2, b2 = np.polyfit(deltas, scores, 1)
+    xs2 = np.linspace(min(deltas), max(deltas), 200)
+    axes[1].plot(xs2, m2*xs2+b2, color="red", linewidth=2,
+                 label=f"r={r_delta_score:.3f}, p={p_delta_score:.2e}")
+    axes[1].axvline(0, color="black", linewidth=1, linestyle="--", alpha=0.5)
+    axes[1].set_xlabel("Δ length (mutated − root)", fontsize=14)
+    axes[1].set_ylabel("Judge score", fontsize=14)
+    axes[1].set_title("Δ Length vs Judge Score", fontsize=16)
+    axes[1].legend(fontsize=12)
+    axes[1].grid(alpha=0.3)
+
+    axes[2].hist(succ_len, bins=50, alpha=0.6, color="#2ecc71", label=f"Success (n={len(succ_len)})")
+    axes[2].hist(fail_len, bins=50, alpha=0.6, color="#e74c3c", label=f"Failure (n={len(fail_len)})")
+    
+    # Solid lines for Means
+    axes[2].axvline(np.mean(succ_len), color="#27ae60", linewidth=2, linestyle="-", 
+                    label=f"Succ Mean: {np.mean(succ_len):.1f}")
+    axes[2].axvline(np.mean(fail_len), color="#c0392b", linewidth=2, linestyle="-", 
+                    label=f"Fail Mean: {np.mean(fail_len):.1f}")
+    
+    # Dashed lines for Medians
+    axes[2].axvline(np.median(succ_len), color="#2ecc71", linewidth=2, linestyle="--", 
+                    label=f"Succ Median: {np.median(succ_len):.1f}")
+    axes[2].axvline(np.median(fail_len), color="#e74c3c", linewidth=2, linestyle="--", 
+                    label=f"Fail Median: {np.median(fail_len):.1f}")
+    
+    axes[2].set_xlabel("Mutated prompt length (chars)", fontsize=14)
+    axes[2].set_ylabel("Count", fontsize=14)
+    axes[2].set_title(f"Length Distribution\nt={t_stat:.3f}, p={p_t:.2e}", fontsize=16)
+    axes[2].legend(fontsize=10, loc="upper right") # Lowered font size slightly to fit the new labels cleanly
+    axes[2].grid(alpha=0.3)
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(vis_dir, "length_correlation.png"), dpi=300, bbox_inches="tight")
+    plt.close()
+    print(f"[LENGTH] Saved to {vis_dir}/length_correlation.{{png,json}}")
+
+
+def analyze_trajectory_depth_dynamics(
+    edges: List[MutationEdge],
+    vis_dir: str,
+) -> None:
+    import os
+    import json
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import scipy.stats as stats
+
+    depths    = [e.depth        for e in edges]
+    lengths   = [len(e.child_prompt) for e in edges]
+    successes = [e.success      for e in edges]
+
+    unique_depths = sorted(list(set(depths)))
+    
+    depth_stats = {}
+    succ_means_by_depth   = []
+    succ_medians_by_depth = []
+    succ_stds_by_depth    = []
+    fail_means_by_depth   = []
+    fail_medians_by_depth = []
+    fail_stds_by_depth    = []
+    success_rates         = []
+    success_counts        = []
+
+    print("\n[TRAJECTORY] Analyzing optimization dynamics (Mean + Median)...")
+    
+    for d in unique_depths:
+        d_lengths = [lengths[i] for i in range(len(depths)) if depths[i] == d]
+        d_succ    = [successes[i] for i in range(len(depths)) if depths[i] == d]
+        
+        d_succ_len = [lengths[i] for i in range(len(depths)) if depths[i] == d and successes[i]]
+        d_fail_len = [lengths[i] for i in range(len(depths)) if depths[i] == d and not successes[i]]
+        
+        total_at_depth = len(d_lengths)
+        succ_at_depth  = sum(d_succ)
+        succ_rate      = (succ_at_depth / total_at_depth) if total_at_depth > 0 else 0.0
+        
+        success_rates.append(succ_rate * 100)
+        success_counts.append(succ_at_depth)
+        
+        # Calculate BOTH Mean and Median safely
+        m_succ   = np.mean(d_succ_len) if len(d_succ_len) > 0 else 0.0
+        med_succ = np.median(d_succ_len) if len(d_succ_len) > 0 else 0.0
+        s_succ   = np.std(d_succ_len)  if len(d_succ_len) > 0 else 0.0
+        
+        m_fail   = np.mean(d_fail_len) if len(d_fail_len) > 0 else 0.0
+        med_fail = np.median(d_fail_len) if len(d_fail_len) > 0 else 0.0
+        s_fail   = np.std(d_fail_len)  if len(d_fail_len) > 0 else 0.0
+        
+        succ_means_by_depth.append(m_succ)
+        succ_medians_by_depth.append(med_succ)
+        succ_stds_by_depth.append(s_succ)
+        
+        fail_means_by_depth.append(m_fail)
+        fail_medians_by_depth.append(med_fail)
+        fail_stds_by_depth.append(s_fail)
+        
+        print(f"[Depth {d}] Succ: Mean={m_succ:.1f}, Med={med_succ:.1f} | Fail: Mean={m_fail:.1f}, Med={med_fail:.1f}")
+        
+        depth_stats[int(d)] = {
+            "total_prompts": int(total_at_depth),
+            "success_count": int(succ_at_depth),
+            "success_rate": float(succ_rate),
+            "mean_length_success": float(m_succ),
+            "median_length_success": float(med_succ),
+            "std_length_success": float(s_succ),
+            "mean_length_failure": float(m_fail),
+            "median_length_failure": float(med_fail),
+            "std_length_failure": float(s_fail)
+        }
+
+    succ_depths  = [depths[i] for i in range(len(depths)) if successes[i]]
+    succ_lengths = [lengths[i] for i in range(len(depths)) if successes[i]]
+    r_depth_len, p_depth_len = stats.spearmanr(succ_depths, succ_lengths)
+
+    result = {"correlation_success_depth_vs_length": {"r": r_depth_len, "p": p_depth_len}, "per_depth_metrics": depth_stats}
+    with open(os.path.join(vis_dir, "trajectory_depth_analytics.json"), "w") as f:
+        json.dump(result, f, indent=4)
+
+    fig, axes = plt.subplots(1, 3, figsize=(22, 7))
+
+    # Panel 1: Success Rates
+    axes[0].bar(unique_depths, success_rates, color="#2ecc71", alpha=0.8, edgecolor="black", width=0.6)
+    axes[0].set_xlabel("Optimization Depth (Iteration)", fontsize=14)
+    axes[0].set_ylabel("Step-wise Success Rate (%)", fontsize=14)
+    axes[0].set_title("Attack Success Rate by Trajectory Depth", fontsize=16)
+    axes[0].set_xticks(unique_depths)
+    axes[0].grid(axis="y", alpha=0.3)
+    for i, val in enumerate(success_rates):
+        axes[0].text(unique_depths[i], val + 1, f"{val:.1f}%", ha="center", fontsize=11, fontweight="bold")
+
+    # Panel 2: Length Evolution Trend (MEAN SOLID, MEDIAN DASHED)
+    # Success Trends
+    axes[1].plot(unique_depths, succ_means_by_depth, marker="o", color="#27ae60", linewidth=2.5, label="Success (Mean)")
+    axes[1].plot(unique_depths, succ_medians_by_depth, marker="x", linestyle="--", color="#2ecc71", linewidth=1.5, label="Success (Median)")
+    
+    # Failure Trends
+    axes[1].plot(unique_depths, fail_means_by_depth, marker="s", color="#c0392b", linewidth=2.5, label="Failure (Mean)")
+    axes[1].plot(unique_depths, fail_medians_by_depth, marker="x", linestyle="--", color="#e74c3c", linewidth=1.5, label="Failure (Median)")
+    
+    # Variance Shadows around Means
+    axes[1].fill_between(unique_depths, np.array(succ_means_by_depth) - np.array(succ_stds_by_depth), np.array(succ_means_by_depth) + np.array(succ_stds_by_depth), color="#27ae60", alpha=0.08)
+    axes[1].fill_between(unique_depths, np.array(fail_means_by_depth) - np.array(fail_stds_by_depth), np.array(fail_means_by_depth) + np.array(fail_stds_by_depth), color="#c0392b", alpha=0.08)
+    
+    axes[1].set_xlabel("Optimization Depth (Iteration)", fontsize=14)
+    axes[1].set_ylabel("Prompt Length (characters)", fontsize=14)
+    axes[1].set_title("Prompt Length Evolution (Mean vs. Median)", fontsize=16)
+    axes[1].set_xticks(unique_depths)
+    axes[1].legend(fontsize=11, loc="upper left")
+    axes[1].grid(alpha=0.3)
+
+    # Panel 3: Shares
+    total_all_successes = sum(success_counts)
+    success_shares = [(c / total_all_successes) * 100 if total_all_successes > 0 else 0 for c in success_counts]
+    axes[2].bar(unique_depths, success_shares, color="#3498db", alpha=0.8, edgecolor="black", width=0.6)
+    axes[2].set_xlabel("Optimization Depth (Iteration)", fontsize=14)
+    axes[2].set_ylabel("Share of Total Successful Bypasses (%)", fontsize=14)
+    axes[2].set_title(f"Distribution of Successful Steps\nSpearman r(depth, length)={r_depth_len:.2f}", fontsize=16)
+    axes[2].set_xticks(unique_depths)
+    axes[2].grid(axis="y", alpha=0.3)
+    for i, val in enumerate(success_shares):
+        axes[2].text(unique_depths[i], val + 1, f"{val:.1f}%", ha="center", fontsize=11)
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(vis_dir, "trajectory_depth_dynamics.png"), dpi=300, bbox_inches="tight")
+    plt.close()
+
+
+# ---------------------------------------------------------------------------
 # Collect all metrics into a results dict
 # ---------------------------------------------------------------------------
 
@@ -535,12 +806,19 @@ def collect_results(
 ) -> dict:
     unique_roots = {e.root_prompt for e in edges}
 
+    # NEW: Calculate the cumulative baseline metrics globally
+    cum_asr = cumulative_root_asr_by_depth(edges)
+    asr_at_1 = cum_asr.get(1, 0.0)
+    asr_at_5 = cum_asr.get(5, cum_asr.get(max(cum_asr.keys(), default=1), 0.0))
+
     results: dict = {
         "global": {
             "num_edges":                           len(edges),
             "num_unique_root_prompts":             len(unique_roots),
             "edge_level_asr":                      attack_success_rate(edges),
             "root_level_asr":                      root_level_attack_success_rate(edges),
+            "asr_at_1_static_baseline":            asr_at_1,    # KTJ Baseline Proxy
+            "asr_at_5_adaptive_optimized":         asr_at_5,    # Adaptive Framework
             "edge_level_semantic_preservation":    semantic_preservation_stats(edges, embedder),
             "root_level_semantic_preservation":    root_level_semantic_preservation_stats(edges, embedder),
             "edge_level_jco":                      judge_consistent_obfuscation(edges, embedder),
@@ -566,11 +844,16 @@ def collect_results(
         drift_per       = drift_rate_per_operator(grouped, embedder)
         pass_per        = pass_at_k_per_operator(grouped, k=5)
 
+        # NEW: Calculate the cumulative baseline metrics per operator
+        cum_asr_per = {name: cumulative_root_asr_by_depth(es) for name, es in grouped.items()}
+
         results["per_operator"] = {
             name: {
                 "num_edges":                        len(es),
                 "edge_level_asr":                   asr_per[name],
                 "root_level_asr":                   root_asr_per[name],
+                "asr_at_1_static_baseline":         cum_asr_per[name].get(1, 0.0), # KTJ Baseline Proxy
+                "asr_at_5_adaptive_optimized":      cum_asr_per[name].get(5, cum_asr_per[name].get(max(cum_asr_per[name].keys(), default=1), 0.0)),
                 "edge_level_semantic_preservation": sp_per[name],
                 "root_level_semantic_preservation": root_sp_per[name],
                 "edge_level_jco":                   jco_per[name],

@@ -87,7 +87,7 @@ def main_analysis(archive_paths: List[str], vis_dir: str, *, use_gpu: bool) -> N
     })
     embedder.batch_embed(all_texts)
     print(f"[ANALYSIS] Embedding cache warmed with {len(all_texts)} texts.", flush=True)
-
+    """
     grouped   = group_destylized_by_operator(edges)
     op_names  = list(grouped.keys())
     color_map = build_color_map_local(op_names)
@@ -126,9 +126,10 @@ def main_analysis(archive_paths: List[str], vis_dir: str, *, use_gpu: bool) -> N
     # --- Recovery vs SP scatter
     plot_recovery_vs_sp(edges, embedder, vis_dir)
     print("[ANALYSIS] Recovery vs SP scatter done.")
-
+    """
     # --- Save metrics JSON
-    results = collect_destylized_results(edges, grouped, embedder)
+    #results = collect_destylized_results(edges, grouped, embedder)
+    results = collect_destylized_results(edges=edges, grouped=None, embedder=embedder)
     save_destylized_results_json(
         results,
         os.path.join(vis_dir, "destylized_attack_metrics.json"),

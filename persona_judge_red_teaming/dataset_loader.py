@@ -1,6 +1,8 @@
 import re
 from typing import List, Dict
 from datasets import load_dataset
+import random
+from collections import defaultdict
 
 
 # ---------------------------------------------------------------------------
@@ -227,3 +229,69 @@ class UnsafeResponseDataset:
         """Extract the first assistant response from an Anthropic HH-RLHF dialogue."""
         match = re.search(r"Assistant:\s*(.*?)(?:\n\s*Human:|\Z)", text, flags=re.DOTALL)
         return match.group(1).strip() if match else ""
+
+
+if __name__ == "__main__":
+    print("[INIT] Initializing dataset loader (this may download data splits via Hugging Face)...")
+    
+    # Instantiate with verbose tracking active to observe splits loading
+    dataset_loader = UnsafeResponseDataset(verbose=True)
+    all_data = dataset_loader.get_dataset()
+    
+    # Group prompts by source to ensure balanced sampling across datasets
+    grouped_data = defaultdict(list)
+    for entry in all_data:
+        grouped_data[entry["source"]].append(entry)
+        
+    print("\n" + "="*80)
+    print("                      BALANCED SAMPLING METRICS")
+    print("="*80)
+    for source, items in grouped_data.items():
+        print(f"Source Split: {source:<15} | Total Available: {len(items)}")
+        
+    # We want 50 total prompts. Let's aim to sample up to 13 from each of your 4 active sources
+    total_to_sample = 50
+    active_sources = list(grouped_data.keys())
+    
+    sampled_entries = []
+    if active_sources:
+        per_source_target = total_to_sample // len(active_sources)
+        remainder = total_to_sample % len(active_sources)
+        
+        # Set exact random seed for reproducible sampling runs
+        random.seed(42)
+        
+        for i, source in enumerate(active_sources):
+            # Distribute remainder evenly across the first few sources
+            target_count = per_source_target + (1 if i < remainder else 0)
+            available_items = grouped_data[source]
+            
+            # Clamp to prevent sampling errors if a dataset split is somehow too small
+            sample_size = min(target_count, len(available_items))
+            sampled_entries.extend(random.sample(available_items, sample_size))
+            
+    # Shuffle the final collection so you can browse a diverse mixed list
+    random.shuffle(sampled_entries)
+    
+    # ---------------------------------------------------------------------------
+    # Pretty-printing out the sampled items for manual paper selection
+    # ---------------------------------------------------------------------------
+    print("\n" + "="*80)
+    print(f"            DISPLAYING {len(sampled_entries)} SAMPLED ADVERSARIAL ROOT CANDIDATES")
+    print("="*80)
+    
+    for index, entry in enumerate(sampled_entries, start=1):
+        print(f"\n[#{index}] ID: {entry['id']} | SOURCE: {entry['source'].upper()}")
+        
+        # Pull optional safety category metadata safely based on source schema
+        if "harm_categories" in entry and entry["harm_categories"]:
+            print(f"CATEGORIES: {', '.join(entry['harm_categories'])}")
+        elif "category" in entry and entry["category"]:
+            print(f"CATEGORY: {entry['category']}")
+        elif "semantic_category" in entry and entry["semantic_category"]:
+            print(f"SEMANTIC CLASS: {entry['semantic_category']} | FUNCTIONAL: {entry['functional_category']}")
+            
+        print("-" * 50)
+        # Display clean, un-truncated prompt text
+        print(entry["response"].strip())
+        print("=" * 80)

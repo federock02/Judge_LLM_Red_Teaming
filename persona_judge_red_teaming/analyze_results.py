@@ -40,6 +40,8 @@ from metrics import (
     pass_at_k_per_operator,
     pass_at_k_global,
     pass_at_k_sweep,
+    analyze_prompt_length_correlation,
+    analyze_trajectory_depth_dynamics,
 )
 from persona_clustering import (
     FIELD_WEIGHTS,
@@ -247,9 +249,22 @@ def main_analysis(
     vis_dir: str,
     *,
     do_cluster: bool = False,
+    length_only: bool = False,
 ) -> None:
     edges_raw = load_edges(archive_path)
-    embedder  = EmbeddingCache()
+    analyze_trajectory_monotonicity(edges_raw, num_samples=20, save_path=os.path.join(vis_dir, "trajectory_monotonicity.png"))
+    exit(0)
+    if length_only:
+        import matplotlib.pyplot as plt
+        import numpy as np
+        print("[ANALYSIS] Running prompt length correlation analysis only.")
+        analyze_prompt_length_correlation(edges_raw, vis_dir)
+        print("[ANALYSIS] Prompt length correlation analysis done.")
+        print("[ANALYSIS] Analyzing trajectory depth dynamics.")
+        analyze_trajectory_depth_dynamics(edges_raw, vis_dir)
+        print("[ANALYSIS] Trajectory depth dynamics analysis done.")
+        exit(0)
+    embedder  = EmbeddingCache(device="cuda:0")
 
     if do_cluster:
         _run_clustered_analysis(edges_raw, embedder, vis_dir)
@@ -478,6 +493,150 @@ def _run_per_operator_plots(
     print("[ANALYSIS] Pass@k done.")
 
 
+import random
+from collections import defaultdict
+
+import matplotlib.pyplot as plt
+
+
+def analyze_trajectory_monotonicity(edges: List[MutationEdge], num_samples: int = 20, save_path: str = "trajectory_monotonicity.png"):
+    """
+    Extracts scores across refinement depths for random trajectories, 
+    plots their lines to check for monotonicity, and prints average directional consistency.
+    """
+    # 1. Group edges by root prompt (each root represents an independent attack trajectory)
+    by_root = group_edges_by_root(edges)
+    
+    # Filter out roots that don't have multi-step depth tracking
+    valid_roots = [root for root, es in by_root.items() if max(e.refinement_iter for e in es) > 0]
+    
+    if len(valid_roots) < num_samples:
+        print(f"[WARNING] Only found {len(valid_roots)} valid trajectories. Sampling all of them.")
+        sampled_roots = valid_roots
+    else:
+        sampled_roots = random.sample(valid_roots, num_samples)
+        
+    plt.figure(figsize=(10, 6))
+    
+    all_trajectories_tracked = []
+    max_depth = 0
+
+    # 2. Build a true single-path depth profile for each sampled root prompt
+    for i, root in enumerate(sampled_roots):
+        root_edges = by_root[root]
+        
+        # Organize edges by depth to make chronological step matching straightforward
+        edges_by_depth = defaultdict(list)
+        for e in root_edges:
+            edges_by_depth[e.refinement_iter].append(e)
+            
+        # Get the max depth reached by this specific root's family tree
+        available_depths = sorted(edges_by_depth.keys())
+        if not available_depths:
+            continue
+            
+        # Initialize our single path with the root baseline (Depth 0)
+        sorted_depths = [0]
+        scores = [root_edges[0].root_fitness]
+        
+        # Pick an arbitrary branch to start tracking forward from Depth 1
+        current_layer_edges = edges_by_depth[1]
+        if not current_layer_edges:
+            continue
+            
+        # Select the first edge at depth 1 as our starting path component
+        chosen_edge = current_layer_edges[0]
+        sorted_depths.append(1)
+        scores.append(chosen_edge.child_fitness)
+        
+        # Chronologically trace down the rabbit hole step-by-step
+        # Ensure we only pull children whose parent text matches our chosen line's text
+        for current_depth in range(2, max(available_depths) + 1):
+            next_layer = edges_by_depth[current_depth]
+            
+            # Find an edge in the next layer spawned exactly by the prompt we just picked
+            matching_edge = None
+            for candidate in next_layer:
+                # Replace 'parent_prompt' and 'child_prompt' with whatever your Edge properties are named
+                if candidate.parent_prompt.strip() == chosen_edge.child_prompt.strip():
+                    matching_edge = candidate
+                    break
+            
+            # If the specific lineage chain breaks or stops, terminate this path extraction early
+            if not matching_edge:
+                break
+                
+            # Advance the path pointer
+            chosen_edge = matching_edge
+            sorted_depths.append(current_depth)
+            scores.append(chosen_edge.child_fitness)
+
+        # Store for global mathematical average tracking later
+        all_trajectories_tracked.append((sorted_depths, scores))
+        
+        # Plot individual single-line trajectory paths
+        plt.plot(sorted_depths, scores, marker='o', alpha=0.5, label=f"Path {i+1}" if num_samples <= 10 else "")
+    
+    # # 2. Build the depth profile for each sampled root prompt
+    # for i, root in enumerate(sampled_roots):
+    #     root_edges = by_root[root]
+        
+    #     # Track the score at each depth position
+    #     depth_scores = {}
+        
+    #     # Include root baseline score (depth 0)
+    #     first_edge = root_edges[0]
+    #     depth_scores[0] = first_edge.root_fitness
+        
+    #     # Gather all children scores
+    #     for e in root_edges:
+    #         depth_scores[e.refinement_iter] = e.child_fitness
+            
+    #     # Sort by depth to preserve depth position mapping
+    #     sorted_depths = sorted(depth_scores.keys())
+    #     scores = [depth_scores[d] for d in sorted_depths]
+        
+    #     max_depth = max(max_depth, max(sorted_depths))
+        
+    #     # Store for global mathematical average tracking later
+    #     all_trajectories_tracked.append((sorted_depths, scores))
+        
+    #     # Plot individual trajectory lines
+    #     plt.plot(sorted_depths, scores, marker='o', alpha=0.5, label=f"Attempt {i+1}" if num_samples <= 10 else "")
+
+    # 3. Compute and plot the mathematical average trend line across all trajectories
+    # We map all depths to evaluate global behavior at specific depths
+    depth_to_scores_map = defaultdict(list)
+    for depths, scores in all_trajectories_tracked:
+        for d, s in zip(depths, scores):
+            depth_to_scores_map[d].append(s)
+            
+    avg_depths = sorted(depth_to_scores_map.keys())
+    avg_scores = [np.mean(depth_to_scores_map[d]) for d in avg_depths]
+    
+    plt.plot(avg_depths, avg_scores, color='black', linewidth=3, linestyle='--', marker='X', label='Average Trend')
+    
+    plt.title(f"Score Distribution Across Trajectory Depth ({num_samples} Random Attempts)")
+    plt.xlabel("Refinement Iteration (Depth)")
+    plt.ylabel("Score / Fitness")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    if num_samples <= 20:
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=300)
+    print(f"[PLOT] Monotonicity analysis saved to {save_path}")
+    
+    # 4. Monotonicity Metric: Check sign delta across averages
+    deltas = np.diff(avg_scores)
+    is_strictly_monotonic = np.all(deltas >= 0) or np.all(deltas <= 0)
+    direction = "increasing" if np.mean(deltas) > 0 else "decreasing"
+    
+    print("\n--- Monotonicity Report Summary ---")
+    print(f"Average Scores per depth: {dict(zip(avg_depths, np.round(avg_scores, 4)))}")
+    print(f"Sequential Changes (Deltas): {np.round(deltas, 4)}")
+    print(f"Is average trend strictly monotonic? {is_strictly_monotonic} (Overall trend: {direction})")
+
+
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
@@ -492,6 +651,9 @@ if __name__ == "__main__":
                         help="Directory to save visualizations and metrics JSON")
     parser.add_argument("--cluster", action="store_true",
                         help="Run HDBSCAN clustering + UMAP before plotting")
+    parser.add_argument("--length_only", action="store_true",
+                    help="Only compute prompt length correlations, then exit.")
+
     args = parser.parse_args()
 
     if args.results_archive is not None:
@@ -513,5 +675,5 @@ if __name__ == "__main__":
     os.makedirs(vis_dir, exist_ok=True)
     print(f"[ANALYSIS] Loading from: {archive_path}")
     print(f"[ANALYSIS] Visualizations and metrics will be saved to: {vis_dir}")
-    main_analysis(archive_path, vis_dir, do_cluster=args.cluster)
+    main_analysis(archive_path, vis_dir, do_cluster=args.cluster, length_only=args.length_only)
     exit(0)

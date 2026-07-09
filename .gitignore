@@ -1,5 +1,10 @@
 __pycache__/
 transformation_judge_red_teaming/__pycache__/
 persona_judge_red_teaming/__pycache__/
-transformation_judge_red_teaming/moo/*
-persona_judge_red_teaming/moo/*
+transformation_judge_red_teaming/moo/
+persona_judge_red_teaming/moo/
+out/
+count_completed.ipynb
+exclude_list.txt
+transformation_judge_red_teaming/debug/
+persona_judge_red_teaming/debug/

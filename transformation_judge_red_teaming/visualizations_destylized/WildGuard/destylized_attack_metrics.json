@@ -1,241 +1,95 @@
 {
-    "n_edges": 9187,
-    "n_recovered": 1405,
-    "recovery_rate": 0.1529501415197039,
+    "n_edges": 12697,
+    "n_recovered": 1971,
+    "recovery_rate": 0.15525797558093737,
     "des": {
-        "mean": 0.1025468962897951,
-        "std": 0.28545221269681204,
-        "median": 0.00034565848181955516,
-        "n": 9186
+        "mean": 0.10241435605498304,
+        "std": 0.28684482576665987,
+        "median": 0.0003257041098549962,
+        "n": 12695
+    },
+    "sp_root_mut": {
+        "mean": 0.4919481961656005,
+        "std": 0.18445095722204694,
+        "median": 0.484161376953125,
+        "n": 12697
     },
     "sp_dest_root": {
-        "mean": 0.43072818030168436,
-        "std": 0.20893896719998073,
-        "median": 0.42229124903678894,
-        "n": 9187
+        "mean": 0.4339437005347372,
+        "std": 0.20888666281575338,
+        "median": 0.4260408878326416,
+        "n": 12697
     },
     "sp_dest_mut": {
-        "mean": 0.7803410977632849,
-        "std": 0.21469795790190963,
-        "median": 0.8756880760192871,
-        "n": 9187
+        "mean": 0.7824146554726047,
+        "std": 0.21403333335814176,
+        "median": 0.8770958185195923,
+        "n": 12697
     },
     "recovery_by_depth": {
-        "1": 0.11417096959265634,
-        "2": 0.08520437535981577,
-        "3": 0.1657992565055762,
-        "4": 0.18608695652173912,
-        "5": 0.19499241274658574
+        "1": 0.11517444304329551,
+        "2": 0.08456659619450317,
+        "3": 0.16221873364730507,
+        "4": 0.18661679135494597,
+        "5": 0.2030820033021464
     },
     "des_by_depth": {
         "1": {
-            "mean": 0.08808641339055555,
-            "std": 0.24945483861346995,
-            "median": 0.0005121154244989157,
-            "n": 1743
+            "mean": 0.09169265463674191,
+            "std": 0.2515699694305972,
+            "median": 0.0005912396591156721,
+            "n": 2379
         },
         "2": {
-            "mean": 0.05076251534270155,
-            "std": 0.21195481111897146,
-            "median": 0.00013365965423872694,
-            "n": 1737
+            "mean": 0.0518150604781467,
+            "std": 0.2144377921934574,
+            "median": 0.00014256464783102274,
+            "n": 2365
         },
         "3": {
-            "mean": 0.11419489688454224,
-            "std": 0.2894626066518903,
-            "median": 0.0006487320642918348,
-            "n": 1345
+            "mean": 0.10746446766566718,
+            "std": 0.28779450234313997,
+            "median": 0.0005159358552191406,
+            "n": 1911
         },
         "4": {
-            "mean": 0.12211542275337481,
-            "std": 0.31780626079805224,
-            "median": 0.0004928844573441893,
-            "n": 1725
+            "mean": 0.11882904338944171,
+            "std": 0.31469968014703215,
+            "median": 0.00035554687201511115,
+            "n": 2406
         },
         "5": {
-            "mean": 0.12748309600484298,
-            "std": 0.31860523133822105,
-            "median": 0.0004494141030590981,
-            "n": 2636
+            "mean": 0.12883971673150718,
+            "std": 0.3229902206428131,
+            "median": 0.0003820767196209829,
+            "n": 3634
         }
     },
     "cumulative_recovery": {
         "1": {
-            "recovery_rate": 0.11417096959265634,
-            "n_attempted": 1743,
-            "n_recovered": 199
+            "recovery_rate": 0.11517444304329551,
+            "n_attempted": 2379,
+            "n_recovered": 274
         },
         "2": {
-            "recovery_rate": 0.09971264367816092,
-            "n_attempted": 3480,
-            "n_recovered": 347
+            "recovery_rate": 0.09991568296795952,
+            "n_attempted": 4744,
+            "n_recovered": 474
         },
         "3": {
-            "recovery_rate": 0.11813471502590674,
-            "n_attempted": 4825,
-            "n_recovered": 570
+            "recovery_rate": 0.1178061607813674,
+            "n_attempted": 6655,
+            "n_recovered": 784
         },
         "4": {
-            "recovery_rate": 0.13603053435114504,
-            "n_attempted": 6550,
-            "n_recovered": 891
+            "recovery_rate": 0.13607769561858515,
+            "n_attempted": 9061,
+            "n_recovered": 1233
         },
         "5": {
-            "recovery_rate": 0.1529501415197039,
-            "n_attempted": 9186,
-            "n_recovered": 1405
+            "recovery_rate": 0.15525797558093737,
+            "n_attempted": 12695,
+            "n_recovered": 1971
         }
-    },
-    "recovery_rate_per_operator": {
-        "Storytelling": 0.18571428571428572,
-        "Checklist Abstraction": 0.11764705882352941,
-        "Metaphorical Reframing": 0.25304136253041365,
-        "Analogy Transform": 0.2107843137254902,
-        "Euphemistic Reduction": 0.16771488469601678,
-        "Always Safe": 0.11538461538461539,
-        "Legal/Policy Framing": 0.16397228637413394,
-        "Append Benign": 0.08058608058608059,
-        "Third-Person Distance": 0.15098314606741572,
-        "Role Reversal (Expert/Historian)": 0.1650485436893204,
-        "Scientific Abstraction": 0.2002635046113307,
-        "Philosophical/Ethical Inquiry": 0.1085972850678733,
-        "Hypothetical Scenario": 0.14613180515759314,
-        "Prepend and Append Benign": 0.11261261261261261,
-        "News": 0.09836065573770492,
-        "Bullet Points": 0.14015904572564614
-    },
-    "des_per_operator": {
-        "Storytelling": {
-            "mean": 0.14315666377615138,
-            "std": 0.2702520021418843,
-            "median": 0.010796585527714342,
-            "n": 420
-        },
-        "Checklist Abstraction": {
-            "mean": 0.07367385724520774,
-            "std": 0.26825454397640186,
-            "median": 2.8927559014846338e-08,
-            "n": 1275
-        },
-        "Metaphorical Reframing": {
-            "mean": 0.20944488783138368,
-            "std": 0.36798761446162487,
-            "median": 0.003042505355551839,
-            "n": 411
-        },
-        "Analogy Transform": {
-            "mean": 0.1535042328485049,
-            "std": 0.32550221851429534,
-            "median": 0.0005192909291924508,
-            "n": 408
-        },
-        "Euphemistic Reduction": {
-            "mean": 0.10527922046002311,
-            "std": 0.2952965200429626,
-            "median": 2.1101739548612386e-05,
-            "n": 954
-        },
-        "Always Safe": {
-            "mean": 0.07482639228116186,
-            "std": 0.23690917085150076,
-            "median": 0.00033895569504238665,
-            "n": 234
-        },
-        "Legal/Policy Framing": {
-            "mean": 0.11635939147248071,
-            "std": 0.3008575544664504,
-            "median": 0.00032242195023002296,
-            "n": 433
-        },
-        "Append Benign": {
-            "mean": 0.05581961937565171,
-            "std": 0.21987411868190654,
-            "median": 0.00023637767299078405,
-            "n": 273
-        },
-        "Third-Person Distance": {
-            "mean": 0.08561682451972011,
-            "std": 0.28192713337818426,
-            "median": 3.6652629205491394e-05,
-            "n": 1424
-        },
-        "Role Reversal (Expert/Historian)": {
-            "mean": 0.12828269441623516,
-            "std": 0.2790793741938311,
-            "median": 0.0030571913230232894,
-            "n": 309
-        },
-        "Scientific Abstraction": {
-            "mean": 0.13753252342365313,
-            "std": 0.32499217218062587,
-            "median": 0.0003739769454114139,
-            "n": 759
-        },
-        "Philosophical/Ethical Inquiry": {
-            "mean": 0.09612313525063781,
-            "std": 0.2571913114757986,
-            "median": 0.0007207800984652124,
-            "n": 221
-        },
-        "Hypothetical Scenario": {
-            "mean": 0.1289855000921055,
-            "std": 0.30211807973895777,
-            "median": 0.0011942089040530846,
-            "n": 349
-        },
-        "Prepend and Append Benign": {
-            "mean": 0.06449331802550407,
-            "std": 0.2137155013375826,
-            "median": 0.00016570546722505242,
-            "n": 222
-        },
-        "News": {
-            "mean": 0.07196155722162313,
-            "std": 0.24017787234782162,
-            "median": 0.0011054396381950937,
-            "n": 488
-        },
-        "Bullet Points": {
-            "mean": 0.07357586184508358,
-            "std": 0.2532225913649239,
-            "median": 0.00019392724425415508,
-            "n": 1006
-        }
-    },
-    "sp_dest_root_per_operator": {
-        "Storytelling": 0.42630193959877355,
-        "Checklist Abstraction": 0.33001203833367015,
-        "Metaphorical Reframing": 0.43946010121790163,
-        "Analogy Transform": 0.37986487479807407,
-        "Euphemistic Reduction": 0.44996389230533623,
-        "Always Safe": 0.48319425683818823,
-        "Legal/Policy Framing": 0.40779486038737156,
-        "Append Benign": 0.4358609737282544,
-        "Third-Person Distance": 0.4266823445580209,
-        "Role Reversal (Expert/Historian)": 0.6466690527582631,
-        "Scientific Abstraction": 0.42515600777853263,
-        "Philosophical/Ethical Inquiry": 0.49880042264229574,
-        "Hypothetical Scenario": 0.45128726863160856,
-        "Prepend and Append Benign": 0.4063051466888807,
-        "News": 0.5550628736554111,
-        "Bullet Points": 0.42191426024844436
-    },
-    "sp_dest_mut_per_operator": {
-        "Storytelling": 0.844419928741002,
-        "Checklist Abstraction": 0.6931829182306926,
-        "Metaphorical Reframing": 0.7345209109377107,
-        "Analogy Transform": 0.7933760526425698,
-        "Euphemistic Reduction": 0.7961695741479377,
-        "Always Safe": 0.8335955056369814,
-        "Legal/Policy Framing": 0.8104706400398844,
-        "Append Benign": 0.8130090499208087,
-        "Third-Person Distance": 0.7733773937281431,
-        "Role Reversal (Expert/Historian)": 0.8757788823453354,
-        "Scientific Abstraction": 0.7903807685466309,
-        "Philosophical/Ethical Inquiry": 0.8459242146748763,
-        "Hypothetical Scenario": 0.838034735709685,
-        "Prepend and Append Benign": 0.7635429502204731,
-        "News": 0.8326398823715624,
-        "Bullet Points": 0.74507404803104
     }
 }

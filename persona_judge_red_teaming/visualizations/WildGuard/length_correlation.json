@@ -1,0 +1,22 @@
+{
+    "pearson_length_score": {
+        "r": 0.16818092624348824,
+        "p": 0.0
+    },
+    "pearson_delta_length_score": {
+        "r": -0.06623089520732041,
+        "p": 4.4872647836294707e-85
+    },
+    "spearman_length_score": {
+        "r": 0.18561078655191987,
+        "p": 0.0
+    },
+    "mean_length_success": 1133.5323559150656,
+    "std_length_success": 592.1875337603482,
+    "mean_length_failure": 1392.6497973899052,
+    "std_length_failure": 639.561154142725,
+    "ttest_success_vs_failure": {
+        "t": -50.91075126064765,
+        "p": 0.0
+    }
+}
