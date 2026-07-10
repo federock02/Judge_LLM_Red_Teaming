@@ -1,0 +1,146 @@
+LlamaGuard:
+Config: Normal (with history)
+  Total Runs:             207
+  ASR@1:                  73.91%
+  ASR@<5:                 100.00%
+  Overall ASR:            100.00%
+  Avg Depth of Success:   1.29
+  Median Depth of Success:1.00
+
+Config: Normal (no history)
+  Total Runs:             207
+  ASR@1:                  73.91%
+  ASR@<5:                 100.00%
+  Overall ASR:            100.00%
+  Avg Depth of Success:   1.30
+  Median Depth of Success:1.00
+
+Config: Random (with history)
+  Total Runs:             207
+  ASR@1:                  73.91%
+  ASR@<5:                 99.52%
+  Overall ASR:            99.52%
+  Avg Depth of Success:   1.29
+  Median Depth of Success:1.00
+
+Config: Random (no history)
+  Total Runs:             207
+  ASR@1:                  73.91%
+  ASR@<5:                 99.52%
+  Overall ASR:            99.52%
+  Avg Depth of Success:   1.27
+  Median Depth of Success:1.00
+
+Config: None (with history)
+  Total Runs:             207
+  ASR@1:                  73.91%
+  ASR@<5:                 99.52%
+  Overall ASR:            99.52%
+  Avg Depth of Success:   1.30
+  Median Depth of Success:1.00
+
+Config: None (no history)
+  Total Runs:             207
+  ASR@1:                  73.91%
+  ASR@<5:                 99.03%
+  Overall ASR:            99.52%
+  Avg Depth of Success:   1.30
+  Median Depth of Success:1.00
+
+ShieldGemma:
+Config: Normal (with history)
+  Total Runs:             79
+  ASR@1:                  54.43%
+  ASR@<5:                 100.00%
+  Overall ASR:            100.00%
+  Avg Depth of Success:   1.52
+  Median Depth of Success:1.00
+
+Config: Normal (no history)
+  Total Runs:             79
+  ASR@1:                  54.43%
+  ASR@<5:                 100.00%
+  Overall ASR:            100.00%
+  Avg Depth of Success:   1.58
+  Median Depth of Success:1.00
+
+Config: Random (with history)
+  Total Runs:             79
+  ASR@1:                  54.43%
+  ASR@<5:                 98.73%
+  Overall ASR:            98.73%
+  Avg Depth of Success:   1.60
+  Median Depth of Success:1.00
+
+Config: Random (no history)
+  Total Runs:             79
+  ASR@1:                  54.43%
+  ASR@<5:                 98.73%
+  Overall ASR:            98.73%
+  Avg Depth of Success:   1.58
+  Median Depth of Success:1.00
+
+Config: None (with history)
+  Total Runs:             79
+  ASR@1:                  54.43%
+  ASR@<5:                 97.47%
+  Overall ASR:            97.47%
+  Avg Depth of Success:   1.57
+  Median Depth of Success:1.00
+
+Config: None (no history)
+  Total Runs:             79
+  ASR@1:                  54.43%
+  ASR@<5:                 97.47%
+  Overall ASR:            97.47%
+  Avg Depth of Success:   1.56
+  Median Depth of Success:1.00
+
+WildGuard:
+Config: Normal (with history)
+  Total Runs:             159
+  ASR@1:                  79.87%
+  ASR@<5:                 100.00%
+  Overall ASR:            100.00%
+  Avg Depth of Success:   1.24
+  Median Depth of Success:1.00
+
+Config: Normal (no history)
+  Total Runs:             159
+  ASR@1:                  79.87%
+  ASR@<5:                 99.37%
+  Overall ASR:            99.37%
+  Avg Depth of Success:   1.23
+  Median Depth of Success:1.00
+
+Config: Random (with history)
+  Total Runs:             159
+  ASR@1:                  79.87%
+  ASR@<5:                 100.00%
+  Overall ASR:            100.00%
+  Avg Depth of Success:   1.23
+  Median Depth of Success:1.00
+
+Config: Random (no history)
+  Total Runs:             159
+  ASR@1:                  79.87%
+  ASR@<5:                 99.37%
+  Overall ASR:            99.37%
+  Avg Depth of Success:   1.23
+  Median Depth of Success:1.00
+
+Config: None (with history)
+  Total Runs:             159
+  ASR@1:                  79.87%
+  ASR@<5:                 100.00%
+  Overall ASR:            100.00%
+  Avg Depth of Success:   1.25
+  Median Depth of Success:1.00
+
+Config: None (no history)
+  Total Runs:             159
+  ASR@1:                  79.87%
+  ASR@<5:                 98.11%
+  Overall ASR:            98.74%
+  Avg Depth of Success:   1.25
+  Median Depth of Success:1.00
