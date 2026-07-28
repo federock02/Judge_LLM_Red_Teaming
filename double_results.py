@@ -182,13 +182,15 @@ def main():
             if not depths:
                 continue
 
-            asr_values = [data[str(d)]['asr'] for d in depths]
+            # 'asr_star' is the semantics-gated headline metric; fall back to the
+            # ungated 'asr' only for caches written before ASR* existed.
+            asr_values = [data[str(d)].get('asr_star', data[str(d)]['asr']) for d in depths]
             sp_values  = [data[str(d)]['preservation'] for d in depths]
             
             linestyle = "-" if app == "persona" else "--"
             
             # Left Axis (ASR) - Scaled stroke weight and marker radius
-            ax1.plot(depths, asr_values, label=f"{label} ASR", color=color, 
+            ax1.plot(depths, asr_values, label=f"{label} ASR*", color=color, 
                      marker=marker, linestyle=linestyle, linewidth=4, markersize=12, alpha=0.35)
             
             # Right Axis (SP) - Heavily reinforced curves to stand out as primary metric
@@ -207,7 +209,7 @@ def main():
         
         # Sparing left labels to maximize plot dimensions
         if i == 0:
-            ax1.set_ylabel("Attack Success Rate (ASR)", labelpad=15)
+            ax1.set_ylabel("Attack Success Rate (ASR*)", labelpad=15)
         else:
             ax1.set_yticklabels([])
         

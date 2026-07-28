@@ -20,6 +20,7 @@ from metrics import (
     EmbeddingCache,
     MutationEdge,
     attack_success_rate_per_operator,
+    asr_star_per_operator,
     collect_results,
     cumulative_metrics_by_depth,
     depth_of_success_per_operator,
@@ -29,6 +30,7 @@ from metrics import (
     jco_per_operator,
     mei_per_operator,
     root_level_asr_per_operator,
+    root_level_asr_star_per_operator,
     root_level_depth_of_success,
     root_level_depth_of_success_per_operator,
     root_level_jco_per_operator,
@@ -348,8 +350,8 @@ def _run_flat_analysis(
     grouped = group_edges_by_operator(edges)
 
     # ---- Sorted ASR distributions
-    asr_per      = attack_success_rate_per_operator(grouped)
-    root_asr_per = root_level_asr_per_operator(grouped)
+    asr_per      = asr_star_per_operator(grouped, embedder)
+    root_asr_per = root_level_asr_star_per_operator(grouped, embedder)
     asr_sorted      = sorted(asr_per.items(),      key=lambda x: x[1], reverse=True)
     root_asr_sorted = sorted(root_asr_per.items(), key=lambda x: x[1], reverse=True)
     plot_asr_sorted(asr_sorted,      vis_dir, level="edge", color="#e67e22")
@@ -428,10 +430,16 @@ def _run_per_operator_plots(
     """Standard named-bar plots — used after clustering when operator count is small."""
 
     # ASR
-    asr_per      = attack_success_rate_per_operator(grouped)
-    root_asr_per = root_level_asr_per_operator(grouped)
-    plot_asr(asr_per,      vis_dir, color_map, level="edge")
-    plot_asr(root_asr_per, vis_dir, color_map, level="root")
+    # ASR* is the headline metric; the ungated bypass rate is kept alongside it
+    # purely as an upper bound, and plotted under its own name.
+    asr_per         = asr_star_per_operator(grouped, embedder)
+    root_asr_per    = root_level_asr_star_per_operator(grouped, embedder)
+    bypass_per      = attack_success_rate_per_operator(grouped)
+    root_bypass_per = root_level_asr_per_operator(grouped)
+    plot_asr(asr_per,         vis_dir, color_map, level="edge", metric="asr_star")
+    plot_asr(root_asr_per,    vis_dir, color_map, level="root", metric="asr_star")
+    plot_asr(bypass_per,      vis_dir, color_map, level="edge", metric="bypass")
+    plot_asr(root_bypass_per, vis_dir, color_map, level="root", metric="bypass")
     print("[ANALYSIS] ASR done.")
 
     # SP

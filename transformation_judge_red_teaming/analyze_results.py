@@ -13,6 +13,7 @@ from metrics import (
     EmbeddingCache,
     MutationEdge,
     attack_success_rate_per_operator,
+    asr_star_per_operator,
     collect_results,
     cumulative_metrics_by_depth,
     depth_of_success_per_operator,
@@ -21,6 +22,7 @@ from metrics import (
     jco_per_operator,
     mei_per_operator,
     root_level_asr_per_operator,
+    root_level_asr_star_per_operator,
     root_level_depth_of_success_per_operator,
     root_level_jco_per_operator,
     root_level_semantic_preservation_per_operator,
@@ -163,14 +165,20 @@ def main_analysis(archive_path: Union[str, List[str]], vis_dir: str) -> None:
     print(f"[ANALYSIS] Embedding cache warmed with {len(all_texts)} unique texts.", flush=True)
 
     # ---- Edge-level ASR
-    asr_per = attack_success_rate_per_operator(grouped)
-    plot_asr(asr_per, vis_dir, color_map, level="edge")
-    print("[ANALYSIS] ASR_G done.")
+    # ASR* is the headline metric; the ungated bypass rate is kept alongside it
+    # purely as an upper bound, and plotted under its own name.
+    asr_per      = asr_star_per_operator(grouped, embedder)
+    bypass_per   = attack_success_rate_per_operator(grouped)
+    plot_asr(asr_per,    vis_dir, color_map, level="edge", metric="asr_star")
+    plot_asr(bypass_per, vis_dir, color_map, level="edge", metric="bypass")
+    print("[ANALYSIS] ASR*_G done.")
 
     # ---- Root-level ASR
-    root_asr_per = root_level_asr_per_operator(grouped)
-    plot_asr(root_asr_per, vis_dir, color_map, level="root")
-    print("[ANALYSIS] ASR_R done.")
+    root_asr_per    = root_level_asr_star_per_operator(grouped, embedder)
+    root_bypass_per = root_level_asr_per_operator(grouped)
+    plot_asr(root_asr_per,    vis_dir, color_map, level="root", metric="asr_star")
+    plot_asr(root_bypass_per, vis_dir, color_map, level="root", metric="bypass")
+    print("[ANALYSIS] ASR*_R done.")
 
     # ---- Edge-level SP
     sp_per = semantic_preservation_per_operator(grouped, embedder)

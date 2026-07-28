@@ -28,6 +28,7 @@ from metrics_destylization import (
     des_per_operator,
     group_destylized_by_operator,
     load_destylized_edges,
+    filter_asr_star_valid,
     recovery_rate_per_depth,
     recovery_rate_per_operator,
     save_destylized_results_json,
@@ -292,6 +293,14 @@ def main_analysis(
         return
 
     _warm_cache(edges, embedder)
+
+    # Recovery rates (ARR/HRR) are proportions over successful attacks. Under
+    # ASR* an attack must also have preserved the root semantics, so restrict
+    # the edge set before any recovery metric is computed.
+    edges = filter_asr_star_valid(edges, embedder)
+    if not edges:
+        print("[ANALYSIS] No ASR*-valid destylized edges. Exiting.", flush=True)
+        return
 
     if do_cluster:
         _run_clustered_analysis(edges, embedder, vis_dir)

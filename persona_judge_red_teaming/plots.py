@@ -87,17 +87,34 @@ def plot_asr(
     color_map: dict,
     *,
     level: str = "edge",
+    metric: str = "asr_star",
 ):
+    """Per-operator bar chart.
+
+    metric="asr_star" plots ASR* (evasion AND semantic preservation), the
+    headline attack success rate. metric="bypass" plots the ungated bypass
+    rate, which is only an upper bound on ASR*.
+    """
+    star   = metric == "asr_star"
     names  = list(asr_per_operator.keys())
     values = list(asr_per_operator.values())
     colors = [color_map[n] for n in names]
-    label  = "ASR_G" if level == "edge" else "ASR_R"
-    title  = (
-        "Global Attack Success Rate per Operator (ASR_G)"
-        if level == "edge"
-        else "Root-level Attack Success Rate per Operator (ASR_R)"
-    )
-    fname = f"{'edge' if level == 'edge' else 'root'}_level_asr_per_operator.png"
+    if star:
+        label = "ASR*_G" if level == "edge" else "ASR*_R"
+        title = (
+            "Global Attack Success Rate per Operator (ASR*_G)"
+            if level == "edge"
+            else "Root-level Attack Success Rate per Operator (ASR*_R)"
+        )
+    else:
+        label = "Bypass_G" if level == "edge" else "Bypass_R"
+        title = (
+            "Global Bypass Rate per Operator (evasion only)"
+            if level == "edge"
+            else "Root-level Bypass Rate per Operator (evasion only)"
+        )
+    stem  = "asr_star" if star else "bypass_rate"
+    fname = f"{'edge' if level == 'edge' else 'root'}_level_{stem}_per_operator.png"
     _bar(names, values, colors, label, title, os.path.join(vis_dir, fname),
          ylim=(0, 1), add_average=True, color_map=color_map)
 
@@ -348,8 +365,8 @@ def plot_asr_sorted(
     """Sorted-bar ASR distribution for large operator sets."""
     values = [v for _, v in sorted_data]
     avg    = float(np.mean(values)) if values else 0.0
-    label  = "ASR_G" if level == "edge" else "ASR_R"
-    fname  = f"{'edge' if level == 'edge' else 'root'}_asr_sorted.png"
+    label  = "ASR*_G" if level == "edge" else "ASR*_R"
+    fname  = f"{'edge' if level == 'edge' else 'root'}_asr_star_sorted.png"
 
     plt.figure(figsize=(20, 8))
     plt.bar(np.arange(len(values)), values, color=color, width=1.0, linewidth=0, edgecolor="none")
@@ -485,7 +502,7 @@ def plot_asr_vs_sp(
     avg_asr = float(np.mean(list(asr_per_operator.values())))
     plt.scatter(avg_sp, avg_asr, color=color_map["Average"], label="AVERAGE", s=450)
     plt.xlabel("Semantic Preservation (⟶ better)", fontsize=20)
-    plt.ylabel("Attack Success Rate (⟶ better)", fontsize=20)
+    plt.ylabel("Attack Success Rate ASR* (⟶ better)", fontsize=20)
     plt.title("ASR vs Semantic Preservation", fontsize=22)
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
@@ -547,13 +564,18 @@ def plot_cumulative_metrics_vs_depth(
     depth_stats: Dict[int, Dict[str, float]],
     vis_dir: str,
 ):
-    depths    = sorted(depth_stats.keys())
-    asr_vals  = [depth_stats[d]["asr"]         for d in depths]
-    pres_vals = [depth_stats[d]["preservation"] for d in depths]
-    jco_vals  = [depth_stats[d]["jco"]          for d in depths]
+    depths     = sorted(depth_stats.keys())
+    star_vals  = [depth_stats[d]["asr_star"]     for d in depths]
+    bypass_vals= [depth_stats[d]["asr"]          for d in depths]
+    pres_vals  = [depth_stats[d]["preservation"] for d in depths]
+    jco_vals   = [depth_stats[d]["jco"]          for d in depths]
 
     plt.figure(figsize=(12, 8))
-    plt.plot(depths, asr_vals,  marker="o", linewidth=3, label="Cumulative ASR")
+    # ASR* is the headline series; the ungated bypass rate is shown faint and
+    # dashed behind it, so the gap the semantic gate opens up is visible.
+    plt.plot(depths, star_vals, marker="o", linewidth=3, label="Cumulative ASR*")
+    plt.plot(depths, bypass_vals, marker="o", linewidth=2, linestyle="--",
+             alpha=0.45, color="gray", label="Cumulative bypass rate (upper bound)")
     plt.plot(depths, pres_vals, marker="s", linewidth=3, label="Cumulative SP")
     plt.plot(depths, jco_vals,  marker="^", linewidth=3, label="Cumulative JCO")
     plt.xlabel("Refinement Depth", fontsize=20)

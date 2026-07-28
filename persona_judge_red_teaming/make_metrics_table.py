@@ -42,8 +42,17 @@ def extract_metrics(data: dict) -> Dict[str, Optional[float]]:
     return {
         "N edges":          get("num_edges"),
         "N roots":          get("num_unique_root_prompts"),
-        "ASR (edge)":       get("edge_level_asr"),
-        "ASR (root)":       get("root_level_asr"),
+        "tau_SP":           get("tau_sp"),
+        # ASR*: evasion AND semantic preservation. The headline attack success rate.
+        "ASR* (edge)":      get("edge_level_asr_star"),
+        "ASR* (root)":      get("root_level_asr_star"),
+        "ASR*@1":           get("asr_star_at_1"),
+        "ASR*@5":           get("asr_star_at_5"),
+        # Bypass rate: evasion only. Reported as an upper bound on ASR*.
+        "Bypass (edge)":    get("edge_level_bypass_rate"),
+        "Bypass (root)":    get("root_level_bypass_rate"),
+        "Bypass@1":         get("bypass_rate_at_1"),
+        "Bypass@5":         get("bypass_rate_at_5"),
         "SP (edge) mean":   get("edge_level_semantic_preservation", "mean"),
         "SP (edge) std":    get("edge_level_semantic_preservation", "std"),
         "SP (root) mean":   get("root_level_semantic_preservation", "mean"),

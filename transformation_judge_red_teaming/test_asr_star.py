@@ -107,14 +107,14 @@ def main():
           M.root_level_attack_success_rate(edges))
     check("tau>1 gives zero", M.root_level_attack_success_rate_star(edges, emb, 1.01), 0.0)
 
-    print("\n[4] sweep is monotone non-increasing in tau")
-    sweep = M.asr_star_threshold_sweep(edges, emb, taus=(0.1, 0.25, 0.5, 0.85))
-    keys = ["0.10", "0.25", "0.50", "0.85"]
-    for level in ("edge_level_asr_star", "root_level_asr_star"):
-        vals = [sweep[k][level] for k in keys]
-        print(f"    {level}: {vals}")
+    print("\n[4] ASR* is monotone non-increasing in tau")
+    taus = (0.1, 0.25, 0.5, 0.85)
+    for name, fn in (("edge", M.attack_success_rate_star),
+                     ("root", M.root_level_attack_success_rate_star)):
+        vals = [fn(edges, emb, t) for t in taus]
+        print(f"    {name}-level: {vals}")
         assert all(vals[i] >= vals[i + 1] for i in range(len(vals) - 1)), \
-            f"{level} not monotone: {vals}"
+            f"{name} not monotone: {vals}"
     print("  PASS  monotonicity")
 
     print("\n[5] cumulative ASR* by depth")
