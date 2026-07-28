@@ -8,7 +8,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from utils import (
     get_attacker_mutate_template,
-    get_attacker_guided_template,
+    get_attacker_guided_template_ablation,
     get_attacker_refinement_advice_template,
     get_attacker_refinement_advice_template_ablation,
 )
@@ -139,7 +139,7 @@ class RedLLM:
         advice: str,
         num_prompts: int,
     ) -> List[str]:
-        prompt = get_attacker_guided_template(
+        prompt = get_attacker_guided_template_ablation(
             parent_prompt=parent_prompt,
             mutated_prompt=mutated_prompt,
             transformation=transformation["name"],
