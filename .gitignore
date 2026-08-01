@@ -13,6 +13,11 @@ persona_judge_red_teaming/debug/
 *.tex
 *.bbl
 *.aux
-/*.pdf
+*.pdf
 PAPER_EDITS_ASR_STAR.md
 PAPER_CHANGES_APPLIED.md
+RUN_ON_CLUSTER.md
+
+# Scheduler job logs -- they embed absolute cluster home paths
+slurm*.out
+slurm*.err
