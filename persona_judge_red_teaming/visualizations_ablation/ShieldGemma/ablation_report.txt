@@ -1,83 +1,84 @@
 === ABLATION ANALYSIS (PERSONA) ===
-Input archive(s) [2, pooled]:
+Input archive(s) [3, pooled]:
   - results/ShieldGemma/20260706_225315/red_teaming_archive.json
   - results/ShieldGemma/20260707_230426/red_teaming_archive.json
+  - results/ShieldGemma/20260709_030456/red_teaming_archive.json
 
 --- Per-config results (score mode x history) ---
 
 Config: Normal (with history)
-  Total Runs:             94
-  ASR@1:                  87.23%
-  ASR@<5:                 98.94%
-  Overall ASR:            100.00%
-  Avg Depth of Success:   1.23
+  Total Runs:             148
+  ASR*@1:                 62.16%
+  ASR*@5:                 75.68%
+  Overall ASR*:           75.68%
+  Avg Depth of Success:   1.34
   Median Depth of Success:1.00
 
 Config: Normal (no history)
-  Total Runs:             94
-  ASR@1:                  87.23%
-  ASR@<5:                 100.00%
-  Overall ASR:            100.00%
-  Avg Depth of Success:   1.15
+  Total Runs:             148
+  ASR*@1:                 62.16%
+  ASR*@5:                 77.70%
+  Overall ASR*:           77.70%
+  Avg Depth of Success:   1.26
   Median Depth of Success:1.00
 
 Config: Random (with history)
-  Total Runs:             94
-  ASR@1:                  87.23%
-  ASR@<5:                 100.00%
-  Overall ASR:            100.00%
-  Avg Depth of Success:   1.19
+  Total Runs:             148
+  ASR*@1:                 62.16%
+  ASR*@5:                 78.38%
+  Overall ASR*:           78.38%
+  Avg Depth of Success:   1.35
   Median Depth of Success:1.00
 
 Config: Random (no history)
-  Total Runs:             94
-  ASR@1:                  87.23%
-  ASR@<5:                 100.00%
-  Overall ASR:            100.00%
-  Avg Depth of Success:   1.16
+  Total Runs:             148
+  ASR*@1:                 62.16%
+  ASR*@5:                 77.03%
+  Overall ASR*:           77.03%
+  Avg Depth of Success:   1.28
   Median Depth of Success:1.00
 
 Config: None (with history)
-  Total Runs:             94
-  ASR@1:                  87.23%
-  ASR@<5:                 98.94%
-  Overall ASR:            100.00%
-  Avg Depth of Success:   1.23
+  Total Runs:             148
+  ASR*@1:                 62.16%
+  ASR*@5:                 77.03%
+  Overall ASR*:           77.03%
+  Avg Depth of Success:   1.38
   Median Depth of Success:1.00
 
 Config: None (no history)
-  Total Runs:             94
-  ASR@1:                  87.23%
-  ASR@<5:                 100.00%
-  Overall ASR:            100.00%
-  Avg Depth of Success:   1.17
+  Total Runs:             148
+  ASR*@1:                 62.16%
+  ASR*@5:                 76.35%
+  Overall ASR*:           76.35%
+  Avg Depth of Success:   1.27
   Median Depth of Success:1.00
 
 === HISTORY EFFECT (per score mode) ===
-Overall ASR: how much the previous-attempt context helps, holding score mode fixed.
+Overall ASR*: how much the previous-attempt context helps, holding score mode fixed.
 Score mode    +History  −History  Δ(+H − −H)
-Normal          100.00    100.00       +0.00
-Random          100.00    100.00       +0.00
-None            100.00    100.00       +0.00
-AVERAGE         100.00    100.00       +0.00
+Normal           75.68     77.70       -2.03
+Random           78.38     77.03       +1.35
+None             77.03     76.35       +0.68
+AVERAGE          77.03     77.03       +0.00
 
-ASR@1 (same axis, depth-1 successes only):
+ASR*@1 (same axis, depth-1 successes only):
 Score mode    +History  −History  Δ(+H − −H)
-Normal           87.23     87.23       +0.00
-Random           87.23     87.23       +0.00
-None             87.23     87.23       +0.00
+Normal           62.16     62.16       +0.00
+Random           62.16     62.16       +0.00
+None             62.16     62.16       +0.00
 
 === SCORE-MODE EFFECT (per history setting) ===
-Overall ASR per score mode; Δ columns are relative to the `normal` (true-score) baseline.
+Overall ASR* per score mode; Δ columns are relative to the `normal` (true-score) baseline.
 
   [with history]  baseline = normal
-  Score mode   Overall ASR   Δ vs normal
-  Normal            100.00    (baseline)
-  Random            100.00         +0.00
-  None              100.00         +0.00
+  Score mode  Overall ASR*   Δ vs normal
+  Normal             75.68    (baseline)
+  Random             78.38         +2.70
+  None               77.03         +1.35
 
   [no history]  baseline = normal
-  Score mode   Overall ASR   Δ vs normal
-  Normal            100.00    (baseline)
-  Random            100.00         +0.00
-  None              100.00         +0.00
+  Score mode  Overall ASR*   Δ vs normal
+  Normal             77.70    (baseline)
+  Random             77.03         -0.68
+  None               76.35         -1.35
