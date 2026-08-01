@@ -8,3 +8,11 @@ count_completed.ipynb
 exclude_list.txt
 transformation_judge_red_teaming/debug/
 persona_judge_red_teaming/debug/
+
+# Paper sources and working notes -- kept out of the public repo
+*.tex
+*.bbl
+*.aux
+/*.pdf
+PAPER_EDITS_ASR_STAR.md
+PAPER_CHANGES_APPLIED.md
