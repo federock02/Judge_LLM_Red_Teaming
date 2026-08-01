@@ -431,20 +431,20 @@ def plot_transfer_asr_bar_all_pairs(
 ) -> None:
     pairs  = sorted(all_metrics.keys())
     labels = [f"{s}→{t}" for s, t in pairs]
-    transfer_asr = [all_metrics[p].get("transfer_asr", 0.0)       for p in pairs]
-    clean_asr    = [all_metrics[p].get("clean_transfer_asr", 0.0) for p in pairs]
+    transfer_asr = [all_metrics[p]["transfer_asr_star"]       for p in pairs]
+    clean_asr    = [all_metrics[p]["clean_transfer_asr_star"] for p in pairs]
     avg_t = float(np.mean(transfer_asr))
     avg_c = float(np.mean(clean_asr))
 
     x    = np.arange(len(labels))
     w    = 0.35
     fig, ax = plt.subplots(figsize=(max(14, 3 * len(pairs)), 8))
-    ax.bar(x - w/2, transfer_asr, w, label="Transfer ASR",       color="#e67e22")
-    ax.bar(x + w/2, clean_asr,    w, label="Clean Transfer ASR", color="#e74c3c")
+    ax.bar(x - w/2, transfer_asr, w, label="Transfer ASR*",       color="#e67e22")
+    ax.bar(x + w/2, clean_asr,    w, label="Clean Transfer ASR*", color="#e74c3c")
     ax.axhline(avg_t, color="#d35400", linestyle="--", linewidth=2,
-               label=f"Avg Transfer ASR ({avg_t:.2f})")
+               label=f"Avg Transfer ASR* ({avg_t:.2f})")
     ax.axhline(avg_c, color="#922b21", linestyle=":",  linewidth=2,
-               label=f"Avg Clean ASR ({avg_c:.2f})")
+               label=f"Avg Clean ASR* ({avg_c:.2f})")
     ax.set_xticks(x)
     ax.set_xticklabels(labels, fontsize=FS_TICK, rotation=30, ha="right")
     ax.set_ylabel("ASR", fontsize=FS_LABEL)
@@ -526,8 +526,9 @@ def main() -> None:
         os.makedirs(pair_vis, exist_ok=True)
 
         print(f"  n={metrics['n_samples']}  "
-              f"Transfer ASR={metrics['transfer_asr']:.1%}  "
-              f"Clean ASR={metrics['clean_transfer_asr']:.1%}", flush=True)
+              f"Transfer ASR*={metrics['transfer_asr_star']:.1%}  "
+              f"Clean ASR*={metrics['clean_transfer_asr_star']:.1%}  "
+              f"Bypass={metrics['transfer_bypass_rate']:.1%}", flush=True)
 
         # plot_transfer_summary_bar(metrics, pair_vis, source, target)
         # plot_transfer_asr_by_depth(
@@ -553,7 +554,7 @@ def main() -> None:
         # )
         plot_transfer_confusion_matrix(
             all_metrics, args.vis_dir,
-            metric="clean_transfer_asr", label="Transfer ASR",
+            metric="clean_transfer_asr_star", label="Clean Transfer ASR*",
         )
         # plot_transfer_asr_bar_all_pairs(all_metrics, args.vis_dir)
         print("[ANALYSIS] Cross-pair plots saved.", flush=True)

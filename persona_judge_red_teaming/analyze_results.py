@@ -255,7 +255,6 @@ def main_analysis(
 ) -> None:
     edges_raw = load_edges(archive_path)
     analyze_trajectory_monotonicity(edges_raw, num_samples=20, save_path=os.path.join(vis_dir, "trajectory_monotonicity.png"))
-    exit(0)
     if length_only:
         import matplotlib.pyplot as plt
         import numpy as np
